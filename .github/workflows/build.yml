@@ -1,0 +1,38 @@
+name: Java Run on Github Action
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  java-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JRE for Java
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jre
+
+      - name: Build Dependency
+        run: mvn -B package --file pom.xml
+
+      - name: Maven clean Install
+        run: mvn -B clean install
+
+      - name: Compile with Maven
+        run: mvn clean compile
+
+      - name: Result Success Message
+        if: success()
+        run: echo "Successful CI"
+
+      - name: Result Failure Message
+        if: failure()
+        run: echo "Build failed"
+
+      - name: Show Build Status
+        run: echo "Build Status:" ${{ job.status }}
