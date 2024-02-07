@@ -1,0 +1,83 @@
+package com.csye6225.assignment.webapp.exception;
+
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.CannotCreateTransactionException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Void> authenticationfailed(AuthenticationException ex){
+        return ResponseEntity.status(401)
+                .cacheControl(CacheControl.noCache())
+                .build();
+    }
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<Void> authenticationfailed(SQLIntegrityConstraintViolationException ex){
+        return ResponseEntity.status(400)
+                .cacheControl(CacheControl.noCache())
+                .build();
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>>  handleMethodArgumentNotValidException(MethodArgumentNotValidException methodargumentNotvalid){
+        Map<String, String> errorResponse= new HashMap<>();
+        methodargumentNotvalid.getBindingResult().getAllErrors().forEach((error)->{
+            String FieldName=((FieldError) error).getField();
+            String msg=error.getDefaultMessage();
+            errorResponse.put(FieldName, msg);
+        });
+        return new ResponseEntity<Map<String,String>>(errorResponse, HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Void> authenticationfailed(HttpRequestMethodNotSupportedException ex){
+        return ResponseEntity.status(405)
+                .cacheControl(CacheControl.noCache())
+                .build();
+    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Void> authenticationemailfail(ResourceNotFoundException ex){
+        return ResponseEntity.status(401)
+                .cacheControl(CacheControl.noCache())
+                .build();
+    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Void> authenticationWrongrequest(HttpMessageNotReadableException ex){
+        return ResponseEntity.status(400)
+                .cacheControl(CacheControl.noCache())
+                .build();
+    }
+    @ExceptionHandler({DataAccessResourceFailureException.class})
+    public ResponseEntity<Void> dbnotconnect(DataAccessResourceFailureException ex ){
+        return ResponseEntity.status(503)
+                .cacheControl(CacheControl.noCache())
+                .build();
+    }
+
+    @ExceptionHandler({CannotCreateTransactionException.class})
+    public ResponseEntity<Void> dbnotconnect(CannotCreateTransactionException ex ){
+        return ResponseEntity.status(503)
+                .cacheControl(CacheControl.noCache())
+                .build();
+    }
+    @ExceptionHandler(BadRequestEmail.class)
+    public ResponseEntity<Void> badupdateemailparam(BadRequestEmail ex){
+        return ResponseEntity.status(400)
+                .cacheControl(CacheControl.noCache())
+                .build();
+    }
+
+}
