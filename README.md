@@ -67,3 +67,5 @@ To install and run this project, please follow these steps:
     git push origin <branchName>
 
 9. Then go to the branch and raise the pull request if the build file runs sucessfully without errors you should be able to rebase and merge else you wont be able to merge
+
+10. test
