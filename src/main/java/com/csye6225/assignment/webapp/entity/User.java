@@ -4,6 +4,7 @@ package com.csye6225.assignment.webapp.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,8 +19,8 @@ import java.util.UUID;
 })
 public class User  {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Type(type = "uuid-char")
+    @Column(updatable = false, nullable = false,name="id")
     private UUID userId;
     @Column(name="username", nullable = false, updatable = false,length = 70, unique = true)
     private String email;

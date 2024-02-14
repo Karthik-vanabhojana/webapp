@@ -7,26 +7,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.UUID;
-
 @Setter
 @Getter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
     private UUID id;
-    @NotEmpty(message = "password Should Not be Null",groups = {CreateValid.class, UpdateValid.class})
+    @Size(message = "password Should Not be Empty", min=2, max = 40,groups = {CreateValid.class, UpdateValid.class})
     private String password;
-    @NotEmpty(message = "first_name Should Not be Null",groups = {CreateValid.class, UpdateValid.class})
+    @Size(message = "first_name Should Not be Empty", min=2, max = 40,groups = {CreateValid.class, UpdateValid.class})
     private String first_name;
-    @NotEmpty(message = "last_name Should Not be Null",groups = {CreateValid.class, UpdateValid.class})
+    @Size(message = "last_name Should Not be Empty", min=2, max = 40,groups = {CreateValid.class, UpdateValid.class})
     private String last_name;
-    @NotEmpty(message = "Username Should Not be Null", groups = {CreateValid.class})
+    @Size(message = "Username Should Not be Empty",  min=2, max = 40,groups = {CreateValid.class})
     @Email(message = "Your Username Address is not Valid !!",groups = {CreateValid.class})
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",message ="Your Email Address is not Valid !!" )
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",message ="Your Username Address is not Valid !!" )
     private String username;
     private Date account_created;
     private Date account_updated;

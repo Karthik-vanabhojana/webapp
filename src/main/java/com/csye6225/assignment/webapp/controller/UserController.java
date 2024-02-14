@@ -2,6 +2,7 @@ package com.csye6225.assignment.webapp.controller;
 
 import com.csye6225.assignment.webapp.Authentication.AuthenticationManagement;
 import com.csye6225.assignment.webapp.annotation.Secured;
+import com.csye6225.assignment.webapp.dto.CreateValid;
 import com.csye6225.assignment.webapp.dto.UpdateValid;
 import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.exception.BadRequestEmail;
@@ -64,7 +65,7 @@ public class UserController {
         }
     }
     @PostMapping("/v1/user")
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userdto) {
+    public ResponseEntity<UserDTO> createUser(@Validated(CreateValid.class) @RequestBody UserDTO userdto) {
         UserDTO registeredUser = this.userservice.registerUser(userdto);
         return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(registeredUser);
 
