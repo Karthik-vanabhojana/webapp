@@ -2,6 +2,7 @@ package com.csye6225.assignment.webapp.service.impl;
 
 import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.entity.User;
+import com.csye6225.assignment.webapp.exception.BadRequestEmail;
 import com.csye6225.assignment.webapp.exception.ResourceNotFoundException;
 import com.csye6225.assignment.webapp.repository.UserRepository;
 import com.csye6225.assignment.webapp.service.UserService;
@@ -28,29 +29,43 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO registerUser(UserDTO userDto) {
         User user = this.convertDtoToEntity(userDto);
-String s=userDto.getPassword();
-        user.setPassword(passwordEncoder.encode(s));
+
         user.setAccount_created(new Date());
         user.setAccount_updated(new Date());
+        if (userDto.getPassword() != null) {
+            String s = userDto.getPassword();
+            user.setPassword(passwordEncoder.encode(s));
 
+        }
         User newUser = this.userRepository.save(user);
 
-
-            return new UserDTO(user.getUserId(), user.getEmail(),  user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
+        return new UserDTO(user.getUserId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
     }
+
     @Override
-    public UserDTO updateUser(UserDTO userdto, String  mail) {
-           User user = this.userRepository.findByEmail(mail)
+    public UserDTO updateUser(UserDTO userdto, String mail) throws BadRequestEmail {
+        User user = this.userRepository.findByEmail(mail)
                 .orElseThrow(() -> new ResourceNotFoundException("Email", " Email Id", mail));
-        String s=userdto.getPassword();
-        user.setFirstName(userdto.getFirst_name());
-        user.setLastName(userdto.getLast_name());
-        user.setPassword(passwordEncoder.encode(s));
+        if (userdto.getPassword() != null) {
+            String s = userdto.getPassword();
+            user.setPassword(passwordEncoder.encode(s));
+
+        }
+        if (userdto.getFirst_name() != null) {
+            user.setFirstName(userdto.getFirst_name());
+
+        }
+        if (userdto.getLast_name() != null) {
+            user.setLastName(userdto.getLast_name());
+        }
+        if(userdto.getLast_name() == null && userdto.getFirst_name() == null && userdto.getPassword() == null){
+            throw new BadRequestEmail();
+        }
         user.setAccount_updated(new Date());
         User newUser = this.userRepository.save(user);
 
 
-        return new UserDTO(newUser.getUserId(), newUser.getEmail(),  newUser.getFirstName(), newUser.getLastName(), newUser.getAccount_created(), newUser.getAccount_updated());
+        return new UserDTO(newUser.getUserId(), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName(), newUser.getAccount_created(), newUser.getAccount_updated());
 
     }
 
@@ -58,8 +73,9 @@ String s=userDto.getPassword();
     public UserDTO getuserByEmail(String mail) {
         User user = this.userRepository.findByEmail(mail)
                 .orElseThrow(() -> new ResourceNotFoundException("Email", " Email Id", mail));
-        return new UserDTO(user.getUserId(), user.getEmail(),  user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
+        return new UserDTO(user.getUserId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
     }
+
     @Override
     public UserDTO getuser(String mail) {
         User user = this.userRepository.findByEmail(mail)
@@ -68,7 +84,7 @@ String s=userDto.getPassword();
 
     }
 
-    public  User convertDtoToEntity(UserDTO userDTO) {
+    public User convertDtoToEntity(UserDTO userDTO) {
         User user = new User();
         user.setUserId(UUID.randomUUID());
         user.setEmail(userDTO.getUsername());
@@ -80,7 +96,7 @@ String s=userDto.getPassword();
         return user;
     }
 
-    public  UserDTO convertEntityToDto(User user) {
+    public UserDTO convertEntityToDto(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getUserId());
         userDTO.setPassword(user.getPassword());
@@ -92,11 +108,11 @@ String s=userDto.getPassword();
         return userDTO;
     }
 
-@Override
+    @Override
     public boolean checkDatabaseConnection() {
         try (Connection connection = dataSource.getConnection()) {
             return true;
-        } catch ( SQLException e) {
+        } catch (SQLException e) {
             return false;
         }
     }
