@@ -20,8 +20,8 @@ jobs:
       - name: Build Dependency
         run: mvn -B clean package -DskipTests
 
-      - name: Maven clean Install
-        run: mvn -B clean install
+      - name: Maven clean
+        run: mvn -B clean
 
       - name: Compile with Maven
         run: mvn clean compile
