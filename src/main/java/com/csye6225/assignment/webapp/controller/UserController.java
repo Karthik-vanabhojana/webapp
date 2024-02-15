@@ -67,8 +67,9 @@ public class UserController {
     @PostMapping("/v1/user")
     public ResponseEntity<UserDTO> createUser(@Validated(CreateValid.class) @RequestBody UserDTO userdto) {
         UserDTO registeredUser = this.userservice.registerUser(userdto);
-        return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(registeredUser);
-
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .cacheControl(CacheControl.noCache())
+                .build();
     }
 
     @Secured
