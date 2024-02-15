@@ -18,7 +18,7 @@ jobs:
           sudo apt-get install -y openjdk-17-jre
 
       - name: Build Dependency
-        run: mvn -B package --file pom.xml
+        run: mvn -B clean package -DskipTests
 
       - name: Maven clean Install
         run: mvn -B clean install
