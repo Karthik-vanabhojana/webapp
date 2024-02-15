@@ -115,7 +115,6 @@ public class UserController {
                 Object value = field.get(userDto);
                 if (value != null) {
                     nonNull.add(field.getName());
-                    System.out.println(field.getName());
                 }
             }
         } catch (IllegalAccessException e) {
