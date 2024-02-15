@@ -68,4 +68,42 @@ To install and run this project, please follow these steps:
 
 9. Then go to the branch and raise the pull request if the build file runs sucessfully without errors you should be able to rebase and merge else you wont be able to merge
 
-10. test
+## Running the Application in Cent OS
+
+1. Add SSH
+   ```bash
+   sh-add /Users/path/to/your/privatekey
+   ssh root@ipaddress
+
+2. SCP the downloaded zip
+   ```bash
+   scp /Users/path/file.zip  root@iponVM:/path
+
+3. install the needed resources
+   ```bash
+   sudo yum install unzip
+   sudo yum install java
+   sudo yum install maven
+   sudo yum install mysql-server
+   
+   #Start MySQL
+   sudo systemctl start mysqld
+   sudo systemctl enable mysqld
+   sudo mysql_secure_installation
+
+4. Unzip
+   ```bash
+   unzip path/file.zip
+5. Add application.properties file
+   ```bash
+   cd  go/to/file
+   mkdir resources
+   vi application.properties
+6. Build project and Compile Project
+   ```bash
+   mvn -B clean install
+   mvn clean compile
+7. Start Application
+   ```bash
+   mvn spring-boot:run
+8. Stop the Application
