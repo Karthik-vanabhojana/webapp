@@ -90,7 +90,7 @@ class WebappApplicationTests {
                 .when()
                 .post("http://localhost:8080/v1/user")
                 .then()
-                .statusCode(201);
+                .statusCode(200);
     }
 
     @Test
@@ -293,7 +293,7 @@ class WebappApplicationTests {
                 .put("http://localhost:8080/v1/user/self")
                 .then()
                 .assertThat()
-                .statusCode(204);
+                .statusCode(201);
     }
   @Test
     @Order(4)
