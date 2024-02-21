@@ -67,6 +67,10 @@ jobs:
       - name: Debug
         run: ls -al
 
+      - name: Debug
+        run: ls -al target
+
+
       - name: Install zip
         run: sudo apt-get install -y zip
 
@@ -74,7 +78,7 @@ jobs:
         run: zip -j webapp-1.2.0-RELEASE.zip target/webapp-1.2.0-RELEASE.jar
 
       - name: Debug
-        run: ls -al
+        run: ls -al target
 
       - name: Run Spring Boot tests
         run: mvn test
