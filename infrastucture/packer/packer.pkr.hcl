@@ -49,8 +49,8 @@ build {
     script = "infrastucture/packer/user.sh"
   }
   provisioner "file" {
-    source      = "systemd/system/java.service"
-    destination = "/tmp/java.service"
+    source      = "systemd/system/start.service"
+    destination = "/tmp/start.service"
   }
 
   provisioner "shell" {
