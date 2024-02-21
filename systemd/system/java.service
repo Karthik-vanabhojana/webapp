@@ -5,8 +5,7 @@ After=network.target
 [Service]
 User=csye6225
 Group=csye6225
-ExecStart= /usr/bin/java -jar /home/karthikvanabhojanacloud/target/webapp-1.2.0-RELEASE.jar
-WorkingDirectory=/home/karthikvanabhojanacloud/
+ExecStart= /usr/bin/java -jar /home/karthikvanabhojanacloud/webapp-1.2.0-RELEASE.jar
 Restart=always
 
 
