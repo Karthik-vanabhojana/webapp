@@ -32,7 +32,7 @@ build {
   }
 
   provisioner "shell" {
-    script       = "infrastucture/packer/setup.sh"
+    script       = "infrastucture/packer/runnerscript.sh"
 
     environment_vars = [
       "DB_PASSWORD=${var.db_password }",
@@ -40,22 +40,22 @@ build {
 
     ]
   }
-
-  provisioner "shell" {
-    script = "infrastucture/packer/unzip.sh"
-  }
-
-  provisioner "shell" {
-    script = "infrastucture/packer/user.sh"
-  }
-  provisioner "file" {
-    source      = "systemd/system/start.service"
-    destination = "/tmp/start.service"
-  }
-
-  provisioner "shell" {
-    script = "infrastucture/packer/runservice.sh"
-  }
+#
+#  provisioner "shell" {
+#    script = "infrastucture/packer/unzip.sh"
+#  }
+#
+#  provisioner "shell" {
+#    script = "infrastucture/packer/user.sh"
+#  }
+#  provisioner "file" {
+#    source      = "systemd/system/start.service"
+#    destination = "/tmp/start.service"
+#  }
+#
+#  provisioner "shell" {
+#    script = "infrastucture/packer/runservice.sh"
+#  }
 
   sources = ["source.googlecompute.image-creation"]
 }
