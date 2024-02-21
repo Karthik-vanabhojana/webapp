@@ -28,10 +28,8 @@ echo "Installing unzip..."
 sudo yum install -y unzip
 
 
-#mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'k19971998';" #constant
 
 
-# Update MySQL root password
 mysql -u "$DB_USERNAME" -e "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED BY '$DB_PASSWORD';"
 
 
