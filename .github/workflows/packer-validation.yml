@@ -1,8 +1,8 @@
-name: Packer Build Run on Merging the pull request
+name: Validate Packer on Github Action
 
 on:
   pull_request:
-    types: [closed]
+    branches: ["main"]
 
 jobs:
   packer-build:
@@ -83,10 +83,6 @@ jobs:
 
       - name: Set packer validate
         run: packer validate -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastucture/packer/packer.pkr.hcl
-
-
-      - name: Run Packer build
-        run: packer build -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}"  infrastucture/packer/packer.pkr.hcl
 
       - name: Result Success Message
         if: success()
