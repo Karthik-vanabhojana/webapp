@@ -66,7 +66,7 @@ jobs:
         run: sudo apt-get install -y zip
 
       - name: ZIP
-        run: zip -j webapp-1.2.0-RELEASE.zip target/webapp-1.2.0-RELEASE.jar
+        run: zip webapp-1.2.0-RELEASE.zip target/webapp-1.2.0-RELEASE.jar
 
       - name: Run Spring Boot tests
         run: mvn test

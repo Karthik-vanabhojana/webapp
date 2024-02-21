@@ -3,5 +3,5 @@
 ZIP_FILE="/tmp/webapp-1.2.0-RELEASE.zip"
 DESTINATION="/home/karthikvanabhojanacloud/"
 
-unzip "$ZIP_FILE" -d "$DESTINATION"
+unzip "$ZIP_FILE" "$DESTINATION"
 
