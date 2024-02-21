@@ -1,4 +1,4 @@
 #!/bin/bash
-sudo mv /tmp/java.service /etc/systemd/system/
+sudo mv /tmp/start.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable java.service
+sudo systemctl enable start.service
