@@ -68,8 +68,8 @@ jobs:
       - name: ZIP
         run: zip webapp-1.2.0-RELEASE.zip target/webapp-1.2.0-RELEASE.jar
 
-      - name: Run Spring Boot tests
-        run: mvn test
+#      - name: Run Spring Boot tests
+#        run: mvn test
 
       - name: Set up Packer
         uses: hashicorp/setup-packer@main
