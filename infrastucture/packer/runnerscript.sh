@@ -32,21 +32,21 @@ sudo systemctl enable mysqld
 mysql -u "$DB_USERNAME" -e "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED BY '$DB_PASSWORD';"
 sudo yum install -y unzip
 
+ZIP_FILE="/tmp/webapp-1.2.0-RELEASE.zip"
+DESTINATION="/home/karthikvanabhojanacloud/"
+
+unzip "$ZIP_FILE" -d "$DESTINATION"
+
 sudo groupadd csye6225
 sudo useradd -r -s /usr/sbin/nologin -g csye6225 csye6225
 sudo mkdir -p /opt/csye6225/
 
 sudo cp /tmp/webapp-1.2.0-RELEASE.zip /opt/csye6225/
-sudo yum install -y unzip
-
-ZIP_FILE="/opt/csye6225/webapp-1.2.0-RELEASE.zip"
-DESTINATION="/home/karthikvanabhojanacloud/"
-
 sudo chown -R csye6225:csye6225 /opt/csye6225/target/webapp-1.2.0-RELEASE.jar
 
 
 sudo cp /tmp/webapp-1.2.0-RELEASE.jar /opt/csye6225/
-sudo chown -R csye6225:csye6225 /opt/csye6225/target/webapp-1.2.0-RELEASE.jar
+sudo chown -R csye6225:csye6225 /opt/csye6225/target/webapp-1.2.0-RELEASE
 
 cat <<EOF | sudo tee /etc/systemd/system/webapp.service
 [Unit]
