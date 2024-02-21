@@ -1,0 +1,14 @@
+[Unit]
+Description=CSYE 6225 App
+After=network.target
+
+[Service]
+User=csye6225
+Group=csye6225
+ExecStart= /usr/bin/java -jar /home/karthikvanabhojanacloud/target/webapp-1.2.0-RELEASE.jar
+WorkingDirectory=/home/karthikvanabhojanacloud/
+Restart=always
+
+
+[Install]
+WantedBy=multi-user.target

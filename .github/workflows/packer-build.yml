@@ -1,0 +1,116 @@
+name: Java Run on Github Action
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  packer-build:
+    runs-on: ubuntu-latest
+
+    env:
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      SOURCE_IMAGE_FAMILY: ${{ secrets.SOURCE_IMAGE_FAMILY }}
+      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+      ZONE: ${{ secrets.ZONE }}
+      IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      CREDENTIALS: ${{ secrets.GCP_CREDENTIALS}}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JRE for Java
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jre
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
+      - name: Create application.properties file
+        run: |
+          mkdir -p src/main/resources/
+          echo "spring.datasource.url=jdbc:mysql://localhost:3306/networkscsye6225?createDatabaseIfNotExist=true" > src/main/resources/application.properties
+          echo "spring.datasource.username=${{ secrets.DB_USERNAME }}" >> src/main/resources/application.properties
+          echo "spring.datasource.password=${{ secrets.DB_PASSWORD }}" >> src/main/resources/application.properties
+          echo "spring.datasource.hikari.connection-timeout=3000" >> src/main/resources/application.properties
+          echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> src/main/resources/application.properties
+          echo "spring.jpa.hibernate.ddl-auto=update" >> src/main/resources/application.properties
+          echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> src/main/resources/application.properties
+          echo "spring.jpa.show-sql=true" >> src/main/resources/application.properties
+
+      - name: Start MySQL Server
+        run: |
+          sudo service mysql start
+
+      #      - name: Compile with Maven
+      #        run:  mvn clean package install -Dmaven.test.skip=true
+
+      - name: Package with Maven
+        run: mvn clean install
+
+
+      - name: Compile with Maven
+        run: mvn compile
+
+      - name: Debug
+        run: pwd
+
+      - name: Debug
+        run: ls -al
+
+      - name: Install zip
+        run: sudo apt-get install -y zip
+
+      - name: Debug
+        run: ls -al target
+
+      - name: ZIP
+        run: zip -j webapp-1.2.0-RELEASE.zip target/webapp-1.2.0-RELEASE.jar
+
+      - name: Debug
+        run: ls -al
+
+
+      - name: Run Spring Boot tests
+        run: mvn test
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@main
+
+      - name: Set packer init
+        working-directory: infrastucture/packer/
+        run: packer init .
+
+
+      - name: Packer fmt
+        run: packer fmt -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastucture/packer/packer.pkr.hcl
+
+      - name: Set packer validate
+        run: packer validate -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastucture/packer/packer.pkr.hcl
+
+
+      - name: Run Packer build
+        run: packer build -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}"  infrastucture/packer/packer.pkr.hcl
+
+      - name: Result Success Message
+        if: success()
+        run: echo "Successful CI"
+
+      - name: Result Failure Message
+        if: failure()
+        run: echo "Build failed"
+
+      - name: Show Build Status
+        run: echo "Build Status:" ${{ job.status }}
