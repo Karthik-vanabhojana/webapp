@@ -48,7 +48,7 @@ build {
   provisioner "shell" {
     script = "infrastucture/packer/user.sh"
   }
-  provisioner "file" 
+  provisioner "file" {
     source      = "systemd/system/start.service"
     destination = "/tmp/start.service"
   }
