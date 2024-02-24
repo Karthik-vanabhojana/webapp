@@ -27,7 +27,7 @@ source "googlecompute" "image-creation" {
 
 build {
   provisioner "file" {
-     source      = "webapp-1.2.0-RELEASE.zip"
+    source      = "webapp-1.2.0-RELEASE.zip"
     destination = "/tmp/"
   }
 
@@ -48,7 +48,7 @@ build {
   provisioner "shell" {
     script = "infrastucture/packer/user.sh"
   }
-  provisioner "file" {
+  provisioner "file" 
     source      = "systemd/system/start.service"
     destination = "/tmp/start.service"
   }
