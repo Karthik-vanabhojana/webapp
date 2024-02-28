@@ -25,7 +25,7 @@ source "googlecompute" "image-creation" {
 
 build {
   provisioner "file" {
-     source      = "webapp-1.2.0-RELEASE.zip"
+    source      = "webapp-1.2.0-RELEASE.zip"
     destination = "/tmp/"
   }
 
