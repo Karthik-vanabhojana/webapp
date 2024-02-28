@@ -1,4 +1,3 @@
-
 packer {
   required_plugins {
     googlecompute = {
@@ -13,16 +12,15 @@ variable "source_image_family" {}
 variable "ssh_username" {}
 variable "zone" {}
 variable "image_name" {}
-variable "db_password"{}
-variable "db_username"{}
-
+variable "db_password" {}
+variable "db_username" {}
 
 source "googlecompute" "image-creation" {
   project_id          = var.project_id
   source_image_family = var.source_image_family
   ssh_username        = var.ssh_username
   zone                = var.zone
-  image_name          = var.image_name
+  image_name          = "${var.image_name}-${formatdate("YYYYMMDDHHmmss", timestamp())}"
 }
 
 build {
@@ -32,22 +30,17 @@ build {
   }
 
   provisioner "shell" {
-    script       = "infrastucture/packer/setup.sh"
-
-    environment_vars = [
-      "DB_PASSWORD=${var.db_password }",
-      "DB_USERNAME=${var.db_username }",
-
-    ]
-  }
-#
-  provisioner "shell" {
-    script = "infrastucture/packer/unzip.sh"
+    script = "infrastucture/packer/setup.sh"
   }
 
   provisioner "shell" {
     script = "infrastucture/packer/user.sh"
   }
+
+  provisioner "shell" {
+    script = "infrastucture/packer/unzip.sh"
+  }
+
   provisioner "file" {
     source      = "systemd/system/start.service"
     destination = "/tmp/start.service"
