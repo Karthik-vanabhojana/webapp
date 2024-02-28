@@ -38,18 +38,6 @@ jobs:
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
-      - name: Create application.properties file
-        run: |
-          mkdir -p src/main/resources/
-          echo "spring.datasource.url=jdbc:mysql://localhost:3306/networkscsye6225?createDatabaseIfNotExist=true" > src/main/resources/application.properties
-          echo "spring.datasource.username=${{ secrets.DB_USERNAME }}" >> src/main/resources/application.properties
-          echo "spring.datasource.password=${{ secrets.DB_PASSWORD }}" >> src/main/resources/application.properties
-          echo "spring.datasource.hikari.connection-timeout=3000" >> src/main/resources/application.properties
-          echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> src/main/resources/application.properties
-          echo "spring.jpa.hibernate.ddl-auto=update" >> src/main/resources/application.properties
-          echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> src/main/resources/application.properties
-          echo "spring.jpa.show-sql=true" >> src/main/resources/application.properties
-
       - name: Start MySQL Server
         run: |
           sudo service mysql start
@@ -60,15 +48,23 @@ jobs:
       - name: Compile with Maven
         run: mvn compile
 
-
+      - name: Run Spring Boot tests
+        run: mvn test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/networkscsye6225?createDatabaseIfNotExist=true
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: "3000"
+          SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+          SPRING_JPA_SHOW_SQL: "true"
 
       - name: Install zip
         run: sudo apt-get install -y zip
 
       - name: ZIP
         run: zip -j webapp-1.2.0-RELEASE.zip target/webapp-1.2.0-RELEASE.jar
-
-
 
       - name: Set up Packer
         uses: hashicorp/setup-packer@main
@@ -77,9 +73,9 @@ jobs:
         working-directory: infrastucture/packer/
         run: packer init .
 
-
       - name: Packer fmt
-        run: packer fmt -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastucture/packer/packer.pkr.hcl
+        working-directory: infrastucture/packer/
+        run: packer fmt -check .
 
       - name: Set packer validate
         run: packer validate -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastucture/packer/packer.pkr.hcl
