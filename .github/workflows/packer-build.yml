@@ -42,8 +42,12 @@ jobs:
         run: |
           sudo service mysql start
 
-      - name: Providing Access
-        run: sudo mkdir /var/log/webapp
+      - name: Create log file
+        run: touch /var/log/webapp/application.log
+
+      - name: Set file permissions
+        run: chmod u+w /var/log/webapp/application.log
+
 
       - name: Package with Maven
         run: mvn clean install -DskipTests
