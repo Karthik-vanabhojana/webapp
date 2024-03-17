@@ -22,6 +22,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create log file
+        run: |
+          sudo mkdir -p /var/log/webapp
+          sudo touch /var/log/webapp/application.log      
+      
+
+      - name: Set file permissions
+        run: sudo chmod u+w /var/log/webapp/application.log
+
       - name: Set up JRE for Java
         run: |
           sudo apt-get install -y openjdk-17-jre
@@ -41,13 +50,6 @@ jobs:
       - name: Start MySQL Server
         run: |
           sudo service mysql start
-
-      - name: Create log file
-        run: sudo touch /var/log/webapp/application.log
-
-      - name: Set file permissions
-        run: sudo chmod u+w /var/log/webapp/application.log
-
 
       - name: Package with Maven
         run: mvn clean install -DskipTests
