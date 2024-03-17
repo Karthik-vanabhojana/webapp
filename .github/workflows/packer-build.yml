@@ -25,10 +25,11 @@ jobs:
       - name: Create log file
         run: |
           sudo adduser githubactions
-          
           sudo mkdir -p /var/log/webapp
-          sudo chown githubactions:githubactions /var/log/webapp/
-          sudo chmod 755 /var/log/webapp/
+          sudo touch /var/log/webapp/application.log
+  
+          sudo chown githubactions:githubactions /var/log/webapp/application.log
+          sudo chmod 644 /var/log/webapp/application.log
 
           ls -ld /var/log/webapp/
           ls -l /var/log/webapp/application.log
