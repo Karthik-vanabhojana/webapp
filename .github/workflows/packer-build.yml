@@ -24,10 +24,11 @@ jobs:
 
       - name: Create log file
         run: |
+          sudo adduser githubactions
           sudo mkdir -p /var/log/webapp
           sudo chown githubactions:githubactions /var/log/webapp
           sudo chmod 755 /var/log/webapp
-      
+
       - name: Set up JRE for Java
         run: |
           sudo apt-get install -y openjdk-17-jre
