@@ -2,7 +2,7 @@ name: Packer Build Run on Merging the pull request
 
 on:
   pull_request:
-    types: [closed]
+    branches: ["main"]
 
 jobs:
   packer-build:
@@ -24,8 +24,8 @@ jobs:
 
       - name: Set up JRE for Java
         run: |
-          sudo apt-get update
           sudo apt-get install -y openjdk-17-jre
+
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
@@ -41,6 +41,9 @@ jobs:
       - name: Start MySQL Server
         run: |
           sudo service mysql start
+
+      - name: Providing Access
+        run: chmod u+w /var
 
       - name: Package with Maven
         run: mvn clean install -DskipTests
