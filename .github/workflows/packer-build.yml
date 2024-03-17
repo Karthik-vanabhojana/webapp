@@ -24,14 +24,14 @@ jobs:
 
       - name: Configuring log
         run: |
-          sudo mkdir -p /var/log/csye6225
-          sudo setfacl -d -m u:runner:rwx /var/log/csye6225/
-          sudo chmod -R u+w /var/log/csye6225/
+          sudo mkdir -p /var/log/webapp
+          sudo setfacl -d -m u:runner:rwx /var/log/webapp/
+          sudo chmod -R u+w /var/log/webapp/
 
       - name: Create log file
         run: |
-          sudo touch /var/log/csye6225/user-app.log
-          sudo chown runner:runner /var/log/csye6225/user-app.log
+          sudo touch /var/log/webapp/application.log
+          sudo chown runner:runner /var/log/webapp/application.log
           ls -l /var/log/csye6225/user-app.log
 
       - name: Set up JRE for Java
