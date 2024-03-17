@@ -10,7 +10,7 @@
         </layout>
     </appender>
     <appender name="file" class="ch.qos.logback.core.FileAppender">
-        <file>/var/log/webapp.log</file>
+        <file>/var/log/webapp/application.log</file>
         <append>true</append>
         <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
             <jsonFormatter
