@@ -26,6 +26,7 @@ jobs:
         run: |
           sudo mkdir -p /var/log/webapp
           sudo touch /var/log/webapp/application.log      
+          sudo chmod u+w /var/log/webapp/application.log 
       
 
       - name: Set file permissions
