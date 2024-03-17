@@ -29,7 +29,7 @@ jobs:
           sudo touch /var/log/webapp/application.log
   
           sudo chown githubactions:githubactions /var/log/webapp/application.log
-          sudo chmod 644 /var/log/webapp/application.log
+          sudo chmod 755 /var/log/webapp/application.log
 
           ls -ld /var/log/webapp/
           ls -l /var/log/webapp/application.log
