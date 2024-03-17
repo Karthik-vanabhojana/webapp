@@ -41,6 +41,10 @@ build {
     script = "infrastucture/packer/unzip.sh"
   }
 
+  provisioner "shell" {
+    script = "infrastucture/packer/installgcp.sh"
+  }
+
   provisioner "file" {
     source      = "systemd/system/start.service"
     destination = "/tmp/start.service"

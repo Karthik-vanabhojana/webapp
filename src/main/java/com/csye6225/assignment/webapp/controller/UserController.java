@@ -8,8 +8,11 @@ import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.exception.BadRequestEmail;
 import com.csye6225.assignment.webapp.service.UserService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,8 +31,10 @@ public class UserController {
     private UserService userservice;
     @Autowired
     private AuthenticationManagement authenticationManagement;
+    private static Logger LOGGER = LoggerFactory.getLogger("jsonLogger");
     @RequestMapping(value = {"/healthz","/v1/user","/v1/user/self"},method = {RequestMethod.OPTIONS,RequestMethod.HEAD})
     public ResponseEntity<Void> checkAdditionalfield() {
+
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
                 .cacheControl(CacheControl.noCache())
                 .build();
@@ -38,27 +43,39 @@ public class UserController {
     @RequestMapping(value = "/healthz",method = RequestMethod.GET)
 
     public ResponseEntity<Void>  healthCheck(HttpServletRequest httpRequest) {
+        LOGGER.debug("UserController. healthCheck {}");
+        LOGGER.info("Checking database Connection");
+        LOGGER.debug("Checking for if the API call is GET");
 
         if(!httpRequest.getMethod().toLowerCase().equals("get")){
             return ResponseEntity.status(405)
                     .cacheControl(CacheControl.noCache())
                     .build();
         }
+        LOGGER.debug("Checking the body is empty");
         if(httpRequest.getContentLength()>-1 ) {
             return ResponseEntity.badRequest()
                     .cacheControl(CacheControl.noCache())
                     .build();
         }
+        LOGGER.debug("Checking the no query is passed");
+
         if (httpRequest.getQueryString() != null ) {
             return ResponseEntity.badRequest()
                     .cacheControl(CacheControl.noCache())
                     .build();
         }
+        LOGGER.debug("Checking the connection");
+
         if (authenticationManagement.isDatabaseConnected()) {
+            LOGGER.info("connection sucessfull");
+
             return ResponseEntity.ok()
                     .cacheControl(CacheControl.noCache())
                     .build();
         } else {
+            LOGGER.error("connection failed");
+
             return ResponseEntity.status(503)
                     .cacheControl(CacheControl.noCache())
                     .build();
@@ -66,15 +83,26 @@ public class UserController {
     }
     @PostMapping("/v1/user")
     public ResponseEntity<UserDTO> createUser(@Validated(CreateValid.class) @RequestBody UserDTO userdto) {
+        LOGGER.debug("UserController. createUser {}");
+        LOGGER.info("Trying to Register new User to the database");
         UserDTO registeredUser = this.userservice.registerUser(userdto);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+        LOGGER.info("Sucessfully register user with user name: "+registeredUser.getUsername());
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .cacheControl(CacheControl.noCache())
-                .build();
+                .headers(headers)
+                .body(registeredUser);
     }
 
     @Secured
     @GetMapping("/v1/user/self")
+
     public ResponseEntity<UserDTO> getself(@RequestHeader("Authorization") String authorizationHeader,HttpServletRequest httpRequest) throws IOException {
+        LOGGER.debug("UserController. getself {}");
+        LOGGER.info("Getting the details for user after authentication");
+
         if(httpRequest.getContentLength()>-1 ) {
             return ResponseEntity.badRequest()
                     .cacheControl(CacheControl.noCache())
@@ -87,6 +115,7 @@ public class UserController {
                     .build();
         }
         UserDTO userDTO = userservice.getuserByEmail(authenticationManagement.getEmail(authorizationHeader));
+        LOGGER.info("User details found for user with username "+userDTO.getUsername());
 
         return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(userDTO);
 
@@ -94,15 +123,21 @@ public class UserController {
 
     @Secured
     @PutMapping("/v1/user/self")
+
     public ResponseEntity<Void> updateSelf(@RequestHeader("Authorization") String authorizationHeader, @Validated(UpdateValid.class) @RequestBody UserDTO userdto) throws BadRequestEmail, IOException {
+        LOGGER.debug("UserController. updateSelf {}");
+        LOGGER.info("Updating the details for user after authentication");
         if(!getNonnullParam(userdto).contains("username")){
             UserDTO userDTO = userservice.updateUser(userdto, authenticationManagement.getEmail(authorizationHeader));
+            LOGGER.info("User details updated for user with username "+userDTO.getUsername());
 
             return ResponseEntity.noContent()
                     .cacheControl(CacheControl.noCache())
                     .build();
         }
         else {
+            LOGGER.error("UserName passed with the payload");
+
             throw new BadRequestEmail();
         }
     }
