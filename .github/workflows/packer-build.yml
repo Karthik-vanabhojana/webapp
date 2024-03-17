@@ -22,23 +22,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Configuring log
+        run: |
+          sudo mkdir -p /var/log/csye6225
+          sudo setfacl -d -m u:runner:rwx /var/log/csye6225/
+          sudo chmod -R u+w /var/log/csye6225/
+
       - name: Create log file
         run: |
-          sudo adduser githubactions
-          sudo mkdir -p /var/log/webapp
-          sudo touch /var/log/webapp/application.log
-  
-          sudo chown githubactions:githubactions /var/log/webapp/application.log
-          sudo chmod 755 /var/log/webapp/application.log
-
-          ls -ld /var/log/webapp/
-          ls -l /var/log/webapp/application.log
-
-      #
-#          sudo adduser githubactions
-#          sudo mkdir -p /var/log/webapp
-#          sudo chown githubactions:githubactions /var/log/webapp/
-#          sudo chmod 755 /var/log/webapp/
+          sudo touch /var/log/csye6225/user-app.log
+          sudo chown runner:runner /var/log/csye6225/user-app.log
+          ls -l /var/log/csye6225/user-app.log
 
       - name: Set up JRE for Java
         run: |
