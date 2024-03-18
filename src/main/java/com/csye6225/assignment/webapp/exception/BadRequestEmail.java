@@ -9,6 +9,6 @@ public class BadRequestEmail extends Exception  {
     public BadRequestEmail() {
         super("NotAuthorized");
         LOGGER.trace("GlobalExceptionHandler. BadRequestEmail {}");
-        LOGGER.error("Email Not accepted during update details");
+        LOGGER.error("UserName Not accepted during update details");
     }
 }

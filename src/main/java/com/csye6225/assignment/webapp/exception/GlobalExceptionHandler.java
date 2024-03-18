@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> authenticationfailed(AuthenticationException ex){
 
         LOGGER.trace("GlobalExceptionHandler. AuthenticationException {} ",ex.getMessage());
-        LOGGER.error("Email Not accepted during update details");
+        LOGGER.error("UserName Not accepted during update details");
         return ResponseEntity.status(401)
                 .cacheControl(CacheControl.noCache())
                 .build();
@@ -97,7 +97,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestEmail.class)
     public ResponseEntity<Void> badupdateemailparam(BadRequestEmail ex){
         LOGGER.trace("GlobalExceptionHandler. BadRequestEmail {} ",ex.getMessage());
-        LOGGER.error("Bad Email Format");
+        LOGGER.error("Bad UserName Format");
         return ResponseEntity.status(400)
                 .cacheControl(CacheControl.noCache())
                 .build();
