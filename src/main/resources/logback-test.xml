@@ -10,12 +10,11 @@
         </layout>
     </appender>
     <appender name="file" class="ch.qos.logback.core.FileAppender">
-        <file>/var/log/webapp/application.log</file>
+        <file>application.log</file>
         <append>true</append>
         <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
             <jsonFormatter
                     class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                <prettyPrint>true</prettyPrint>
             </jsonFormatter>
             <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
         </layout>

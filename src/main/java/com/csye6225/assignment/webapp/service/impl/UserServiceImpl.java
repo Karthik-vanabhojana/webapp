@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
         }
         User newUser = this.userRepository.save(user);
-        LOGGER.info("User Created Sucessfully with user name "+newUser.getUserId());
+        LOGGER.info("User Created Sucessfully with username "+newUser.getUserId());
 
         return new UserDTO(user.getUserId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
     }
@@ -52,9 +52,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUser(UserDTO userdto, String mail) throws BadRequestEmail {
         LOGGER.trace("UserServiceImpl. updateUser {} ");
-        LOGGER.info("Checking user with mail Id " +mail);
+        LOGGER.info("Checking user with username" +mail);
         User user = this.userRepository.findByEmail(mail)
-                .orElseThrow(() -> new ResourceNotFoundException("Email", " Email Id", mail));
+                .orElseThrow(() -> new ResourceNotFoundException("UserName", " UserName", mail));
         LOGGER.info("Trying to update details");
 
         if (userdto.getPassword() != null) {
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setAccount_updated(new Date());
         User newUser = this.userRepository.save(user);
-        LOGGER.info("Updated details for user with email "+mail);
+        LOGGER.info("Updated details for user with username "+mail);
 
 
         return new UserDTO(newUser.getUserId(), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName(), newUser.getAccount_created(), newUser.getAccount_updated());
@@ -84,10 +84,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getuserByEmail(String mail) {
         LOGGER.trace("UserServiceImpl. getuserByEmail {} ");
-        LOGGER.info("Checking user with mail Id " +mail);
+        LOGGER.info("Checking user with username " +mail);
         User user = this.userRepository.findByEmail(mail)
                 .orElseThrow(() -> new ResourceNotFoundException("Email", " Email Id", mail));
-        LOGGER.info("User with mail "+mail+" found");
+        LOGGER.info("User with username "+mail+" found");
 
         return new UserDTO(user.getUserId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
     }
@@ -95,10 +95,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getuser(String mail) {
         LOGGER.trace("UserServiceImpl. getuser {} ");
-        LOGGER.info("Checking user with mail Id " +mail);
+        LOGGER.info("Checking user with username " +mail);
         User user = this.userRepository.findByEmail(mail)
-                .orElseThrow(() -> new ResourceNotFoundException("Email", " Email Id", mail));
-        LOGGER.info("User with mail "+mail+" found");
+                .orElseThrow(() -> new ResourceNotFoundException("Username", "Username", mail));
+        LOGGER.info("User with username "+mail+" found");
         return this.convertEntityToDto(user);
 
     }
