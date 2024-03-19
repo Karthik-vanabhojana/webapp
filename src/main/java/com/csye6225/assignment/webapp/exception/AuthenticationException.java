@@ -9,7 +9,7 @@ public class AuthenticationException extends Exception {
 
     public AuthenticationException() {
         super("NotAuthorized");
-        LOGGER.trace("GlobalExceptionHandler. AuthenticationException {}");
+        LOGGER.debug("GlobalExceptionHandler. AuthenticationException {}");
         LOGGER.error("Login Authentication Failed");
 
     }

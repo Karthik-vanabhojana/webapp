@@ -6,6 +6,7 @@ import com.csye6225.assignment.webapp.dto.CreateValid;
 import com.csye6225.assignment.webapp.dto.UpdateValid;
 import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.exception.BadRequestEmail;
+import com.csye6225.assignment.webapp.exception.DuplicateUserNameException;
 import com.csye6225.assignment.webapp.service.UserService;
 
 import org.slf4j.Logger;
@@ -82,7 +83,7 @@ public class UserController {
         }
     }
     @PostMapping("/v1/user")
-    public ResponseEntity<UserDTO> createUser(@Validated(CreateValid.class) @RequestBody UserDTO userdto) {
+    public ResponseEntity<UserDTO> createUser(@Validated(CreateValid.class) @RequestBody UserDTO userdto) throws DuplicateUserNameException {
         LOGGER.debug("UserController. createUser {}");
         LOGGER.info("Trying to Register new User to the database");
         UserDTO registeredUser = this.userservice.registerUser(userdto);

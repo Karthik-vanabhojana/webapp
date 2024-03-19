@@ -3,6 +3,7 @@ package com.csye6225.assignment.webapp.service.impl;
 import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.entity.User;
 import com.csye6225.assignment.webapp.exception.BadRequestEmail;
+import com.csye6225.assignment.webapp.exception.DuplicateUserNameException;
 import com.csye6225.assignment.webapp.exception.ResourceNotFoundException;
 import com.csye6225.assignment.webapp.repository.UserRepository;
 import com.csye6225.assignment.webapp.service.UserService;
@@ -31,9 +32,14 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public UserDTO registerUser(UserDTO userDto) {
-        LOGGER.trace("UserServiceImpl. registerUser {} ");
+    public UserDTO registerUser(UserDTO userDto) throws DuplicateUserNameException {
+        LOGGER.debug("UserServiceImpl. registerUser {} ");
         LOGGER.info("Creating the User.........");
+
+        if(this.userRepository.findByEmail(userDto.getUsername()).isPresent()){
+            LOGGER.error("Duplicate User Id and User is already present");
+            throw new DuplicateUserNameException();
+        }
         User user = this.convertDtoToEntity(userDto);
 
         user.setAccount_created(new Date());
@@ -51,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(UserDTO userdto, String mail) throws BadRequestEmail {
-        LOGGER.trace("UserServiceImpl. updateUser {} ");
+        LOGGER.debug("UserServiceImpl. updateUser {} ");
         LOGGER.info("Checking user with username" +mail);
         User user = this.userRepository.findByEmail(mail)
                 .orElseThrow(() -> new ResourceNotFoundException("UserName", " UserName", mail));
@@ -83,7 +89,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getuserByEmail(String mail) {
-        LOGGER.trace("UserServiceImpl. getuserByEmail {} ");
+        LOGGER.debug("UserServiceImpl. getuserByEmail {} ");
         LOGGER.info("Checking user with username " +mail);
         User user = this.userRepository.findByEmail(mail)
                 .orElseThrow(() -> new ResourceNotFoundException("Email", " Email Id", mail));
@@ -94,7 +100,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getuser(String mail) {
-        LOGGER.trace("UserServiceImpl. getuser {} ");
+        LOGGER.debug("UserServiceImpl. getuser {} ");
         LOGGER.info("Checking user with username " +mail);
         User user = this.userRepository.findByEmail(mail)
                 .orElseThrow(() -> new ResourceNotFoundException("Username", "Username", mail));
@@ -104,7 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User convertDtoToEntity(UserDTO userDTO) {
-        LOGGER.trace("UserServiceImpl. convertDtoToEntity {} ");
+        LOGGER.debug("UserServiceImpl. convertDtoToEntity {} ");
         LOGGER.info("Converting DTO to Entity......");
         User user = new User();
         user.setUserId(UUID.randomUUID());
@@ -118,7 +124,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDTO convertEntityToDto(User user) {
-        LOGGER.trace("UserServiceImpl. convertEntityToDto {} ");
+        LOGGER.debug("UserServiceImpl. convertEntityToDto {} ");
         LOGGER.info("Converting Entity to DTO......");
 
         UserDTO userDTO = new UserDTO();
@@ -134,7 +140,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkDatabaseConnection() {
-        LOGGER.trace("UserServiceImpl. checkDatabaseConnection {} ");
+        LOGGER.debug("UserServiceImpl. checkDatabaseConnection {} ");
 
         LOGGER.info("Checking Connection......");
 

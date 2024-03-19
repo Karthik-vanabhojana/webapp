@@ -21,7 +21,7 @@ public class ResourceNotFoundException extends RuntimeException {
         this.fieldName = fieldName;
         this.fieldValue = fieldValue;
 
-        LOGGER.trace("GlobalExceptionHandler. ResourceNotFoundException {} ");
+        LOGGER.debug("GlobalExceptionHandler. ResourceNotFoundException {} ");
         LOGGER.error("User with user Id Not found");
     }
 
@@ -31,7 +31,7 @@ public class ResourceNotFoundException extends RuntimeException {
         this.resourceName = resourceName;
         this.fieldName = fieldName;
         this.fieldsValue = fieldsValue;
-        LOGGER.trace("GlobalExceptionHandler. ResourceNotFoundException {} ");
+        LOGGER.debug("GlobalExceptionHandler. ResourceNotFoundException {} ");
         LOGGER.error("User with user Id Not found");
     }
 
