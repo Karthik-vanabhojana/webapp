@@ -19,7 +19,7 @@ public class AuthenticationManagement {
     private BCryptPasswordEncoder passwordEncoder;
     private static Logger logger = LoggerFactory.getLogger("jsonLogger");
     public boolean checklogin(String authorizationHeader) {
-        logger.trace("AuthenticationManagement checklogin{}");
+        logger.debug("AuthenticationManagement checklogin{}");
         logger.info("Checking login credential");
 
         String base64Credentials = authorizationHeader.substring("Basic".length()).trim();

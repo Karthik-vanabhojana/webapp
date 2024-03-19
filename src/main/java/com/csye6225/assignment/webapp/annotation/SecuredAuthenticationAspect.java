@@ -23,7 +23,7 @@ public class SecuredAuthenticationAspect {
 
     @Before("@annotation(com.csye6225.assignment.webapp.annotation.Secured)")
     public void authenticateBeforeApi() throws AuthenticationException {
-        logger.trace("SecuredAuthenticationAspect authenticateBeforeApi{} ");
+        logger.debug("SecuredAuthenticationAspect authenticateBeforeApi{} ");
         logger.info("Authenticating user ");
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
