@@ -32,14 +32,10 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public UserDTO registerUser(UserDTO userDto) throws DuplicateUserNameException {
+    public UserDTO registerUser(UserDTO userDto)  {
         LOGGER.debug("UserServiceImpl. registerUser {} ");
         LOGGER.info("Creating the User.........");
 
-        if(this.userRepository.findByEmail(userDto.getUsername()).isPresent()){
-            LOGGER.error("Duplicate User Id and User is already present");
-            throw new DuplicateUserNameException();
-        }
         User user = this.convertDtoToEntity(userDto);
 
         user.setAccount_created(new Date());
