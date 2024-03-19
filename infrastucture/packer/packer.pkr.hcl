@@ -37,6 +37,11 @@ build {
     script = "infrastucture/packer/user.sh"
   }
 
+  provisioner "file" {
+    source      = "infrastucture/packer/config.yaml"
+    destination = "/tmp/config.yaml"
+  }
+
   provisioner "shell" {
     script = "infrastucture/packer/unzip.sh"
   }

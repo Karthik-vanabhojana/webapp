@@ -15,8 +15,8 @@ public class WebappApplication {
 
 	public static void main(String[] args) {
 		Logger logger = LoggerFactory.getLogger("jsonLogger");
-		logger.debug("Debug message");
 		logger.info("Application Starting..........................");
+
 		SpringApplication.run(WebappApplication.class, args);
 
 		logger.info("Application Started!!!!!!!!!!!!...............");
