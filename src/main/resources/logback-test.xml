@@ -2,6 +2,7 @@
 <Configuration>
 
     <appender name="file" class="ch.qos.logback.core.FileAppender">
+        <filter class="com.csye6225.assignment.webapp.service.impl.SentiveInformationFilter" />
         <file>/var/log/webapp/application.log</file>
         <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
             <jsonFormatter
@@ -15,7 +16,7 @@
 
 
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="file" />
     </root>
 </Configuration>
