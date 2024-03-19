@@ -83,7 +83,7 @@ public class UserController {
         }
     }
     @PostMapping("/v1/user")
-    public ResponseEntity<UserDTO> createUser(@Validated(CreateValid.class) @RequestBody UserDTO userdto)  {
+    public ResponseEntity<UserDTO> createUser(@Validated(CreateValid.class) @RequestBody UserDTO userdto) throws DuplicateUserNameException {
         LOGGER.debug("UserController. createUser {}");
         LOGGER.info("Trying to Register new User to the database");
         UserDTO registeredUser = this.userservice.registerUser(userdto);
