@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> authenticationfailed(AuthenticationException ex){
 
         LOGGER.debug("GlobalExceptionHandler. AuthenticationException {} ",ex.getMessage());
-        LOGGER.error("UserName Not accepted during update details");
+        LOGGER.error("Incorrect UserName or password");
         return ResponseEntity.status(401)
                 .cacheControl(CacheControl.noCache())
                 .build();
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Void> authenticationfailed(SQLIntegrityConstraintViolationException ex){
         LOGGER.debug("GlobalExceptionHandler. SQLIntegrityConstraintViolationException {} ",ex.getErrorCode());
-        LOGGER.error("SQL Exception for unique details");
+        LOGGER.error("Invalid details entered");
         return ResponseEntity.status(400)
                 .cacheControl(CacheControl.noCache())
                 .build();
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>>  handleMethodArgumentNotValidException(MethodArgumentNotValidException methodargumentNotvalid){
         LOGGER.debug("GlobalExceptionHandler. MethodArgumentNotValidException {} ",methodargumentNotvalid.getMessage());
-        LOGGER.error("API Method Not allowed Exception");
+        LOGGER.error("Invalid User Details Entered");
         Map<String, String> errorResponse= new HashMap<>();
         methodargumentNotvalid.getBindingResult().getAllErrors().forEach((error)->{
             String FieldName=((FieldError) error).getField();
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Void> authenticationfailed(HttpRequestMethodNotSupportedException ex){
         LOGGER.debug("GlobalExceptionHandler. HttpRequestMethodNotSupportedException {} ",ex.getMessage());
-        LOGGER.error("API Method Not allowed Exception");
+        LOGGER.error("HttpRequestMethodNotSupportedException");
         return ResponseEntity.status(405)
                 .cacheControl(CacheControl.noCache())
                 .build();
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Void> authenticationemailfail(ResourceNotFoundException ex){
         LOGGER.debug("GlobalExceptionHandler. ResourceNotFoundException {} ",ex.getMessage());
-        LOGGER.error("API endpoint not available Exception");
+        LOGGER.error("User Not Found");
         return ResponseEntity.status(401)
                 .cacheControl(CacheControl.noCache())
                 .build();
