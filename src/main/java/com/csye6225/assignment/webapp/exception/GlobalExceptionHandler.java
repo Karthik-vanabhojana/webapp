@@ -32,8 +32,10 @@ public class GlobalExceptionHandler {
                 .build();
     }
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+
     public ResponseEntity<Void> badrequest(SQLIntegrityConstraintViolationException ex){
         LOGGER.debug("GlobalExceptionHandler. badrequest {} ",ex.getMessage());
+
         LOGGER.error("Invalid details entered");
         return ResponseEntity.status(400)
                 .cacheControl(CacheControl.noCache())
@@ -42,6 +44,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>>  handleMethodArgumentNotValidException(MethodArgumentNotValidException methodargumentNotvalid){
         LOGGER.debug("GlobalExceptionHandler. handleMethodArgumentNotValidException {} ",methodargumentNotvalid.getMessage());
+
         LOGGER.error("Invalid User Details Entered");
         Map<String, String> errorResponse= new HashMap<>();
         methodargumentNotvalid.getBindingResult().getAllErrors().forEach((error)->{
@@ -54,8 +57,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+
     public ResponseEntity<Void> methodnotsupported(HttpRequestMethodNotSupportedException ex){
         LOGGER.debug("GlobalExceptionHandler. methodnotsupported {} ",ex.getMessage());
+
         LOGGER.error("HttpRequestMethodNotSupportedException");
         return ResponseEntity.status(405)
                 .cacheControl(CacheControl.noCache())
@@ -63,23 +68,29 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Void> authenticationemailfail(ResourceNotFoundException ex){
+
         LOGGER.debug("GlobalExceptionHandler. authenticationemailfail {} ",ex.getMessage());
+
         LOGGER.error("User Not Found");
         return ResponseEntity.status(401)
                 .cacheControl(CacheControl.noCache())
                 .build();
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
+
     public ResponseEntity<Void> invalidparams(HttpMessageNotReadableException ex){
         LOGGER.debug("GlobalExceptionHandler. invalidparams {} ",ex.getMessage());
         LOGGER.error("Invalid Parameter provided for userdetails");
+
         return ResponseEntity.status(400)
                 .cacheControl(CacheControl.noCache())
                 .build();
     }
     @ExceptionHandler({DataAccessResourceFailureException.class})
     public ResponseEntity<Void> dbnotconnect(DataAccessResourceFailureException ex ){
+
         LOGGER.debug("GlobalExceptionHandler. dbnotconnect {} ",ex.getMessage());
+
         LOGGER.error("Database Not Connected");
         return ResponseEntity.status(503)
                 .cacheControl(CacheControl.noCache())
@@ -88,7 +99,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({CannotCreateTransactionException.class})
     public ResponseEntity<Void> dbnotconnect(CannotCreateTransactionException ex ){
+
         LOGGER.debug("GlobalExceptionHandler. dbnotconnect {} ",ex.getMessage());
+
         LOGGER.error("Database Not Connected");
         return ResponseEntity.status(503)
                 .cacheControl(CacheControl.noCache())
@@ -96,7 +109,9 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(BadRequestEmail.class)
     public ResponseEntity<Void> badupdateemailparam(BadRequestEmail ex){
+
         LOGGER.debug("GlobalExceptionHandler. badupdateemailparam {} ",ex.getMessage());
+
         LOGGER.error("Bad UserName Format");
         return ResponseEntity.status(400)
                 .cacheControl(CacheControl.noCache())
