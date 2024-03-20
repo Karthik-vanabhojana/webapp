@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUser(UserDTO userdto, String mail) throws BadRequestEmail {
         LOGGER.debug("UserServiceImpl. updateUser {} ");
-        LOGGER.info("Checking user with username" +mail);
+        LOGGER.info("Checking user with username " +mail);
         User user = this.userRepository.findByEmail(mail)
                 .orElseThrow(() -> new ResourceNotFoundException("UserName", " UserName", mail));
         LOGGER.info("Trying to update details");
