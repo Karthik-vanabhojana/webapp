@@ -17,13 +17,13 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
     private UUID id;
-    @Size(message = "password Should Not be Empty", min=2, max = 40,groups = {CreateValid.class, UpdateValid.class})
+    @Size(message = "password Should Not be Empty", min=1, max = 40,groups = {CreateValid.class, UpdateValid.class})
     private String password;
-    @Size(message = "first_name Should Not be Empty", min=2, max = 40,groups = {CreateValid.class, UpdateValid.class})
+    @Size(message = "first_name Should Not be Empty", min=1, max = 40,groups = {CreateValid.class, UpdateValid.class})
     private String first_name;
-    @Size(message = "last_name Should Not be Empty", min=2, max = 40,groups = {CreateValid.class, UpdateValid.class})
+    @Size(message = "last_name Should Not be Empty", min=1, max = 40,groups = {CreateValid.class, UpdateValid.class})
     private String last_name;
-    @Size(message = "Username Should Not be Empty",  min=2, max = 40,groups = {CreateValid.class})
+    @Size(message = "Username Should Not be Empty",  min=1, max = 40,groups = {CreateValid.class})
     @Email(message = "Your Username Address is not Valid !!",groups = {CreateValid.class})
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",message ="Your Username Address is not Valid !!" )
     private String username;
