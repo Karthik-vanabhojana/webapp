@@ -48,7 +48,7 @@ if(userRepository.findByEmail(userDto.getUsername()).isPresent()){
 
         }
         User newUser = this.userRepository.save(user);
-        LOGGER.info("User Created Sucessfully with username "+newUser.getUserId());
+        LOGGER.info("User Created Sucessfully with username "+newUser.getEmail());
 
         return new UserDTO(user.getUserId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
     }
