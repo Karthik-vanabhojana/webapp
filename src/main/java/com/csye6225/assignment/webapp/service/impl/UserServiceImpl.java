@@ -109,7 +109,7 @@ if(userRepository.findByEmail(userDto.getUsername()).isPresent()){
 
     public User convertDtoToEntity(UserDTO userDTO) {
         LOGGER.debug("UserServiceImpl. convertDtoToEntity {} ");
-        LOGGER.info("Converting DTO to Entity......");
+        LOGGER.debug("Converting DTO to Entity......");
         User user = new User();
         user.setUserId(UUID.randomUUID());
         user.setEmail(userDTO.getUsername());
@@ -123,7 +123,7 @@ if(userRepository.findByEmail(userDto.getUsername()).isPresent()){
 
     public UserDTO convertEntityToDto(User user) {
         LOGGER.debug("UserServiceImpl. convertEntityToDto {} ");
-        LOGGER.info("Converting Entity to DTO......");
+        LOGGER.debug("Converting Entity to DTO......");
 
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getUserId());
