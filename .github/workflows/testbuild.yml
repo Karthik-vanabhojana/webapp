@@ -47,6 +47,8 @@ jobs:
           SPRING_JPA_HIBERNATE_DDL_AUTO: update
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
           SPRING_JPA_SHOW_SQL: "true"
+          PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
+          SECRET_KEY: ${{secrets.SECRET_KEY}}
 
       - name: Result Success Message
         if: success()

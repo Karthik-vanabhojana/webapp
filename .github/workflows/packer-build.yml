@@ -65,18 +65,18 @@ jobs:
 
       - name: Compile with Maven
         run: mvn compile
-
-      - name: Run Spring Boot tests
-        run: mvn test
-        env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/networkscsye6225?createDatabaseIfNotExist=true
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USER }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: "3000"
-          SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
-          SPRING_JPA_HIBERNATE_DDL_AUTO: update
-          SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-          SPRING_JPA_SHOW_SQL: "true"
+#
+#      - name: Run Spring Boot tests
+#        run: mvn test
+#        env:
+#          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/networkscsye6225?createDatabaseIfNotExist=true
+#          SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USER }}
+#          SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+#          SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: "3000"
+#          SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+#          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+#          SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+#          SPRING_JPA_SHOW_SQL: "true"
 
       - name: Install zip
         run: sudo apt-get install -y zip
