@@ -2,9 +2,12 @@ package com.csye6225.assignment.webapp.service.impl;
 
 import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.entity.User;
+import com.csye6225.assignment.webapp.entity.UserEmail;
 import com.csye6225.assignment.webapp.exception.BadRequestEmail;
 import com.csye6225.assignment.webapp.exception.DuplicateUserNameException;
 import com.csye6225.assignment.webapp.exception.ResourceNotFoundException;
+import com.csye6225.assignment.webapp.exception.UserNotverified;
+import com.csye6225.assignment.webapp.repository.UserMailRepository;
 import com.csye6225.assignment.webapp.repository.UserRepository;
 import com.csye6225.assignment.webapp.service.UserService;
 import org.slf4j.Logger;
@@ -25,7 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private DataSource dataSource;
-
+    @Autowired
+    UserMailRepository userMailRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
@@ -48,53 +52,77 @@ public class UserServiceImpl implements UserService {
 
         }
         User newUser = this.userRepository.save(user);
+        UserEmail userEmail = new UserEmail();
+        userEmail.setId(newUser.getUserId());
+        userEmail.setUser(newUser);
+        userEmail.setMailVerified(false); // Assuming initial state
+        userEmail.setEmailSent(false); // Assuming initial state
+        userEmail.setMailSentTiming(new Date());
+
+
+        userMailRepository.save(userEmail);
+
         LOGGER.info("User Created Sucessfully with username "+newUser.getEmail());
 
         return new UserDTO(user.getUserId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
     }
 
     @Override
-    public UserDTO updateUser(UserDTO userdto, String mail) throws BadRequestEmail {
+    public UserDTO updateUser(UserDTO userdto, String mail) throws BadRequestEmail, UserNotverified {
         LOGGER.debug("UserServiceImpl. updateUser {} ");
         LOGGER.info("Checking user with username " +mail);
         User user = this.userRepository.findByEmail(mail)
                 .orElseThrow(() -> new ResourceNotFoundException("UserName", " UserName", mail));
+        UserEmail userEmail=this.userMailRepository.findByUser(user).orElseThrow(()->  new ResourceNotFoundException("Email", " Email Id", mail));
         LOGGER.info("Trying to update details");
+        if(userEmail.isMailVerified()) {
+            if (userdto.getPassword() != null) {
+                String s = userdto.getPassword();
+                user.setPassword(passwordEncoder.encode(s));
 
-        if (userdto.getPassword() != null) {
-            String s = userdto.getPassword();
-            user.setPassword(passwordEncoder.encode(s));
+            }
+            if (userdto.getFirst_name() != null) {
+                user.setFirstName(userdto.getFirst_name());
+
+            }
+            if (userdto.getLast_name() != null) {
+                user.setLastName(userdto.getLast_name());
+            }
+            if(userdto.getLast_name() == null && userdto.getFirst_name() == null && userdto.getPassword() == null){
+                throw new BadRequestEmail();
+            }
+            user.setAccount_updated(new Date());
+            User newUser = this.userRepository.save(user);
+            LOGGER.info("Updated details for user with username "+mail);
+
+
+            return new UserDTO(newUser.getUserId(), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName(), newUser.getAccount_created(), newUser.getAccount_updated());
 
         }
-        if (userdto.getFirst_name() != null) {
-            user.setFirstName(userdto.getFirst_name());
 
+        else{
+            throw new UserNotverified();
         }
-        if (userdto.getLast_name() != null) {
-            user.setLastName(userdto.getLast_name());
-        }
-        if(userdto.getLast_name() == null && userdto.getFirst_name() == null && userdto.getPassword() == null){
-            throw new BadRequestEmail();
-        }
-        user.setAccount_updated(new Date());
-        User newUser = this.userRepository.save(user);
-        LOGGER.info("Updated details for user with username "+mail);
-
-
-        return new UserDTO(newUser.getUserId(), newUser.getEmail(), newUser.getFirstName(), newUser.getLastName(), newUser.getAccount_created(), newUser.getAccount_updated());
-
     }
 
     @Override
-    public UserDTO getuserByEmail(String mail) {
+    public UserDTO getuserByEmail(String mail) throws UserNotverified {
         LOGGER.debug("UserServiceImpl. getuserByEmail {} ");
         LOGGER.info("Checking user with username " +mail);
         User user = this.userRepository.findByEmail(mail)
                 .orElseThrow(() -> new ResourceNotFoundException("Email", " Email Id", mail));
-        LOGGER.info("User with username "+mail+" found");
+        UserEmail userEmail=this.userMailRepository.findByUser(user).orElseThrow(()->  new ResourceNotFoundException("Email", " Email Id", mail));
+        LOGGER.info("Trying to update details");
+        if(userEmail.isMailVerified()) {
+            LOGGER.info("User with username "+mail+" found");
 
-        return new UserDTO(user.getUserId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
-    }
+            return new UserDTO(user.getUserId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAccount_created(), user.getAccount_updated());
+
+        }
+        else{
+            throw new UserNotverified();
+        }
+       }
 
     @Override
     public UserDTO getuser(String mail) {
@@ -152,6 +180,22 @@ public class UserServiceImpl implements UserService {
 
             return false;
         }
+    }
+
+    @Override
+    public void getVerified(String userId) {
+        LOGGER.debug("UserServiceImpl. getVerified {} ");
+        LOGGER.info("Verifying User......");
+
+
+        User user = this.userRepository.findByEmail(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User Name", " User Name", userId));
+        LOGGER.info("Verifying User......");
+        UserEmail userEmail=this.userMailRepository.findByUser(user).orElseThrow(()->  new ResourceNotFoundException("Email", " Email Id", userId));
+        userEmail.setMailVerified(true);
+        this.userMailRepository.save(userEmail);
+        LOGGER.info("Verified Sucessfully with User Name: "+userId);
+
     }
 }
 
