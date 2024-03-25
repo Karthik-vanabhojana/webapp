@@ -27,8 +27,8 @@ class WebappApplicationTests {
     private UserRepository userRepo;
     @AfterAll
     public void deleteUser() {
-        User user = userRepo.findByEmail("TestUser@gmail.com")
-                .orElseThrow(() -> new ResourceNotFoundException("Email", "Email Id", "TestUser@gmail.com"));
+        User user = userRepo.findByEmail("kartikvtla@gmail.com")
+                .orElseThrow(() -> new ResourceNotFoundException("Email", "Email Id", "kartikvtla@gmail.com"));
         userRepo.delete(user);
     }
 
