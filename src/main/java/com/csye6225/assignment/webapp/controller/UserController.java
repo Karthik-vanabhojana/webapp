@@ -16,6 +16,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,8 +34,10 @@ import java.util.List;
 
 @RestController
 public class UserController {
-    private static String SECRET_KEY = System.getenv("SECRET_KEY");
-
+    @Value("${SECRET_KEY}")
+    private  String SECRET_KEY;
+@Autowired
+Publish publish;
     @Autowired
     private UserService userservice;
     @Autowired
@@ -99,7 +102,7 @@ public class UserController {
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
         LOGGER.info("Sucessfully register user with user name: "+registeredUser.getUsername());
         try {
-            Publish.publishWithErrorHandlerExample(userdto.getUsername(),userdto.getFirst_name());
+            publish.publishWithErrorHandlerExample(userdto.getUsername(),userdto.getFirst_name());
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -187,7 +190,7 @@ public class UserController {
 
 
     }
-    private static boolean isValidToken(String token) {
+    private boolean isValidToken(String token) {
 
 
         try {
