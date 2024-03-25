@@ -32,5 +32,6 @@ public class User  {
     private String lastName;
     private Date account_created;
     private Date  account_updated;
-
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserEmail userEmail;
 }

@@ -7,8 +7,12 @@ import com.csye6225.assignment.webapp.dto.UpdateValid;
 import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.exception.BadRequestEmail;
 import com.csye6225.assignment.webapp.exception.DuplicateUserNameException;
+import com.csye6225.assignment.webapp.exception.UserNotverified;
 import com.csye6225.assignment.webapp.service.UserService;
 
+import com.csye6225.assignment.webapp.service.impl.Publish;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +28,13 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
 public class UserController {
+    private static String SECRET_KEY = System.getenv("SECRET_KEY");
+
     @Autowired
     private UserService userservice;
     @Autowired
@@ -91,6 +98,13 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
         LOGGER.info("Sucessfully register user with user name: "+registeredUser.getUsername());
+        try {
+            Publish.publishWithErrorHandlerExample(userdto.getUsername(),userdto.getFirst_name());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
@@ -100,7 +114,7 @@ public class UserController {
     @Secured
     @GetMapping("/v1/user/self")
 
-    public ResponseEntity<UserDTO> getself(@RequestHeader("Authorization") String authorizationHeader,HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<UserDTO> getself(@RequestHeader("Authorization") String authorizationHeader,HttpServletRequest httpRequest) throws IOException, UserNotverified {
         LOGGER.debug("UserController. getself {}");
         LOGGER.info("Getting the details for user after authentication");
 
@@ -125,7 +139,7 @@ public class UserController {
     @Secured
     @PutMapping("/v1/user/self")
 
-    public ResponseEntity<Void> updateSelf(@RequestHeader("Authorization") String authorizationHeader, @Validated(UpdateValid.class) @RequestBody UserDTO userdto) throws BadRequestEmail, IOException {
+    public ResponseEntity<Void> updateSelf(@RequestHeader("Authorization") String authorizationHeader, @Validated(UpdateValid.class) @RequestBody UserDTO userdto) throws BadRequestEmail, IOException, UserNotverified {
         LOGGER.debug("UserController. updateSelf {}");
         LOGGER.info("Updating the details for user after authentication");
         if(!getNonnullParam(userdto).contains("username")){
@@ -157,4 +171,34 @@ public class UserController {
         }
         return nonNull;
     }
+
+
+    @GetMapping("/v1/user/verify")
+    public ResponseEntity<Void> getVerified(@RequestParam String token) {
+        String SECRET_KEY = "yourhardcodedsecretkeyaddingnewvalues12345678901234";
+
+        if (!isValidToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+       String email= Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody().getSubject();
+
+        userservice.getVerified(email);
+        return ResponseEntity.status(HttpStatus.OK).build();
+
+
+    }
+    private static boolean isValidToken(String token) {
+
+
+        try {
+
+            Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+
 }

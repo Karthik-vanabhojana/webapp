@@ -18,6 +18,8 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       CREDENTIALS: ${{ secrets.GCP_CREDENTIALS}}
+      PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
+      SECRET_KEY: ${{secrets.SECRET_KEY}}
 
     steps:
       - name: Checkout code
