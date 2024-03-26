@@ -27,7 +27,6 @@ public class WebappApplication {
 		SpringApplication.run(WebappApplication.class, args);
 		logger.info("Application Started!!!!!!!!!!!!...............");
 
-
 	}
 
 }
