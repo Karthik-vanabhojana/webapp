@@ -35,4 +35,7 @@ public class UserEmail {
     @Column(name = "mail_sent_timing")
     private Date mailSentTiming;
 
+    @Column(name = "token")
+    private UUID token;
+
 }

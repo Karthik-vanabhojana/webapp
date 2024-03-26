@@ -12,5 +12,5 @@ public interface UserService {
     UserDTO getuser(String mail);
      boolean checkDatabaseConnection();
 
-    void getVerified(String userId);
+    void getVerified(String userId) throws UserNotverified;
 }

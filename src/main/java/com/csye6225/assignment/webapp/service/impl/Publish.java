@@ -48,22 +48,14 @@ public class Publish {
 
         TopicName topicName = TopicName.of(projectId, topicId);
         LOGGER.debug("jsonPayload");
-
-
         Publisher publisher = null;
-
-
         try {
             publisher = Publisher.newBuilder(topicName).build();
             LOGGER.debug("after publisher");
-
-
             ByteString data = ByteString.copyFromUtf8(jsonPayload);
             LOGGER.debug("before publisher message");
-
             PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
             LOGGER.debug("after publisher PubsubMessage");
-
             ApiFuture<String> future = publisher.publish(pubsubMessage);
             LOGGER.debug("after publisher ApiFuture");
 
