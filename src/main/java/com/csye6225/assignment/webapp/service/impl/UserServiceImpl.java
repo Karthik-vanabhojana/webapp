@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO registerUser(UserDTO userDto) throws DuplicateUserNameException {
+
         LOGGER.debug("UserServiceImpl. registerUser {} ");
         LOGGER.info("Creating the User.........");
         if(userRepository.findByEmail(userDto.getUsername()).isPresent()){
@@ -55,9 +56,8 @@ public class UserServiceImpl implements UserService {
         UserEmail userEmail = new UserEmail();
         userEmail.setId(newUser.getUserId());
         userEmail.setUser(newUser);
-        userEmail.setMailVerified(false); // Assuming initial state
-        userEmail.setEmailSent(false); // Assuming initial state
-        userEmail.setMailSentTiming(new Date());
+        userEmail.setMailVerified(false);
+        userEmail.setEmailSent(false);
 
 
         userMailRepository.save(userEmail);
@@ -183,18 +183,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getVerified(String userId) {
+    public void getVerified(String token) throws UserNotverified {
+
         LOGGER.debug("UserServiceImpl. getVerified {} ");
         LOGGER.info("Verifying User......");
 
+UserEmail emailUser=this.userMailRepository.findByToken(token).orElseThrow(()-> new UserNotverified());
+if(emailUser.getMailSentTiming().before(emailUser.getMailSentTiming())) {
+    emailUser.setMailVerified(true);
+    this.userMailRepository.save(emailUser);
+}
 
-        User user = this.userRepository.findByEmail(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User Name", " User Name", userId));
-        LOGGER.info("Verifying User......");
-        UserEmail userEmail=this.userMailRepository.findByUser(user).orElseThrow(()->  new ResourceNotFoundException("Email", " Email Id", userId));
-        userEmail.setMailVerified(true);
-        this.userMailRepository.save(userEmail);
-        LOGGER.info("Verified Sucessfully with User Name: "+userId);
 
     }
 }

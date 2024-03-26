@@ -2,13 +2,17 @@ package com.csye6225.assignment.webapp;
 
 
 import com.csye6225.assignment.webapp.entity.User;
+import com.csye6225.assignment.webapp.entity.UserEmail;
 import com.csye6225.assignment.webapp.exception.ResourceNotFoundException;
+import com.csye6225.assignment.webapp.repository.UserMailRepository;
 import com.csye6225.assignment.webapp.repository.UserRepository;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+
+import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -23,6 +27,8 @@ class WebappApplicationTests {
         WebappApplication.main(new String[]{});
     }
 
+    @Autowired
+    private UserMailRepository userMailRepository;
     @Autowired
     private UserRepository userRepo;
     @AfterAll
@@ -78,7 +84,7 @@ class WebappApplicationTests {
     @Order(1)
     public void adduser() {
         String requestBody = "{\n" +
-                "    \"username\": \"TestUser@gmail.com\",\n" +
+                "    \"username\": \"kartikvtla@gmail.com\",\n" +
                 "    \"password\": \"Test\",\n" +
                 "    \"first_name\": \"TestFirstName\",\n" +
                 "    \"last_name\": \"TestLastName\"\n" +
@@ -96,7 +102,7 @@ class WebappApplicationTests {
     @Test
     public void existingEmailAdduser() {
         String requestBody = "{\n" +
-                "    \"username\": \"TestUser@gmail.com\",\n" +
+                "    \"username\": \"kartikvtla@gmail.com\",\n" +
                 "    \"password\": \"Test1\",\n" +
                 "    \"first_name\": \"TestFirstName1\",\n" +
                 "    \"last_name\": \"TestLastName1\"\n" +
@@ -115,7 +121,7 @@ class WebappApplicationTests {
     @Test
     public void addUsermethodNotSupported() {
         String requestBody = "{\n" +
-                "    \"username\": \"TestUser@gmail.com\",\n" +
+                "    \"username\": \"kartikvtla@gmail.com\",\n" +
                 "    \"password\": \"Test1\",\n" +
                 "    \"first_name\": \"TestFirstName1\",\n" +
                 "    \"last_name\": \"TestLastName1\"\n" +
@@ -133,7 +139,7 @@ class WebappApplicationTests {
     @Test
     public void addUserbadrequestSupported() {
         String requestBody = "{\n" +
-                "    \"username\": \"TestUser@gmail.com\",\n" +
+                "    \"username\": \"kartikvtla@gmail.com\",\n" +
                 "    \"first_name\": \"TestFirstName1\",\n" +
                 "    \"last_name\": \"TestLastName1\"\n" +
                 "}";
@@ -161,7 +167,7 @@ class WebappApplicationTests {
     @Test
     public void testPostEndpointNotfound() {
         String requestBody = "{\n" +
-                "    \"username\": \"TestUser@gmail.com\",\n" +
+                "    \"username\": \"kartikvtla@gmail.com\",\n" +
                 "    \"password\": \"Test1\",\n" +
                 "    \"first_name\": \"TestFirstName1\",\n" +
                 "    \"last_name\": \"TestLastName1\"\n" +
@@ -180,10 +186,16 @@ class WebappApplicationTests {
     @Test
     @Order(2)
     public void testgetself() {
-        String username = "TestUser@gmail.com";
+        String username = "kartikvtla@gmail.com";
         String password = "Test";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
-
+User user =this.userRepo.findByEmail(username).get();
+        Optional<UserEmail> userEmailOptional = this.userMailRepository.findByUser(user);
+        if (userEmailOptional.isPresent()) {
+            UserEmail userEmail = userEmailOptional.get();
+            userEmail.setMailVerified(true);
+            this.userMailRepository.save(userEmail);
+        }
         given()
                 .header("Authorization", authorizationHeader)
                 .accept(ContentType.JSON)
@@ -192,7 +204,7 @@ class WebappApplicationTests {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("username", equalTo("TestUser@gmail.com"))
+                .body("username", equalTo("kartikvtla@gmail.com"))
                 .body("first_name", equalTo("TestFirstName"))
                 .body("last_name", equalTo("TestLastName"));
 
@@ -200,7 +212,7 @@ class WebappApplicationTests {
 
     @Test
     public void testgetselfAuthenticationFailed() {
-        String username = "TestUser@gmail.com";
+        String username = "kartikvtla@gmail.com";
         String password = "Test123";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
 
@@ -220,12 +232,12 @@ class WebappApplicationTests {
     @Test
     public void testgetselfbadRequest() {
         String requestBody = "{\n" +
-                "    \"username\": \"TestUser@gmail.com\",\n" +
+                "    \"username\": \"kartikvtla@gmail.com\",\n" +
                 "    \"password\": \"Test1\",\n" +
                 "    \"first_name\": \"TestFirstName1\",\n" +
                 "    \"last_name\": \"TestLastName1\"\n" +
                 "}";
-        String username = "TestUser@gmail.com";
+        String username = "kartikvtla@gmail.com";
         String password = "Test";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
         given()
@@ -242,7 +254,7 @@ class WebappApplicationTests {
 
     @Test
     public void testselfUnsupportedmethod() {
-        String username = "TestUser@gmail.com";
+        String username = "kartikvtla@gmail.com";
         String password = "Test";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
 
@@ -259,7 +271,7 @@ class WebappApplicationTests {
 
     @Test
     public void testgetEndpointNotfound() {
-        String username = "TestUser@gmail.com";
+        String username = "kartikvtla@gmail.com";
         String password = "Test";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
 
@@ -277,7 +289,7 @@ class WebappApplicationTests {
     @Test
     @Order(3)
     public void testPut() {
-        String username = "TestUser@gmail.com";
+        String username = "kartikvtla@gmail.com";
         String password = "Test";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
         String requestBody = "{\n" +
@@ -298,7 +310,7 @@ class WebappApplicationTests {
   @Test
     @Order(4)
     public void testgetselfafterPut() {
-      String username = "TestUser@gmail.com";
+      String username = "kartikvtla@gmail.com";
       String password = "Test";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
 
@@ -311,7 +323,7 @@ class WebappApplicationTests {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("username", equalTo("TestUser@gmail.com"))
+                .body("username", equalTo("kartikvtla@gmail.com"))
                 .body("first_name", equalTo("UpdateFirstName"))
                 .body("last_name", equalTo("UpdateTestLastName"));
 
@@ -320,7 +332,7 @@ class WebappApplicationTests {
 
     @Test
     public void testPutFaildAuthentication() {
-        String username = "TestUser@gmail.com";
+        String username = "kartikvtla@gmail.com";
         String password = "Test123";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
         String requestBody = "{\n" +
@@ -342,11 +354,11 @@ class WebappApplicationTests {
     @Test
     @Order(5)
     public void testPutEmailEntered() {
-        String username = "TestUser@gmail.com";
+        String username = "kartikvtla@gmail.com";
         String password = "Test";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
         String requestBody = "{\n" +
-                "    \"username\": \"TestUser@gmail.com\",\n" +
+                "    \"username\": \"kartikvtla@gmail.com\",\n" +
                 "    \"password\": \"Test\",\n" +
                 "    \"first_name\": \"UpdateFirstName\",\n" +
                 "    \"last_name\": \"UpdateTestLastName\"\n" +
@@ -364,7 +376,7 @@ class WebappApplicationTests {
 
     @Test
     public void testPutcheckfieldEmpty() {
-        String username = "TestUser@gmail.com";
+        String username = "kartikvtla@gmail.com";
         String password = "Test";
         String authorizationHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
         String requestBody = "{\n" +

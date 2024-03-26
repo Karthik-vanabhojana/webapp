@@ -177,31 +177,12 @@ Publish publish;
 
 
     @GetMapping("/v1/user/verify")
-    public ResponseEntity<Void> getVerified(@RequestParam String token) {
-        String SECRET_KEY = "yourhardcodedsecretkeyaddingnewvalues12345678901234";
+    public ResponseEntity<Void> getVerified(@RequestParam String token) throws UserNotverified {
 
-        if (!isValidToken(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-       String email= Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody().getSubject();
 
-        userservice.getVerified(email);
+        userservice.getVerified(token);
         return ResponseEntity.status(HttpStatus.OK).build();
 
 
     }
-    private boolean isValidToken(String token) {
-
-
-        try {
-
-            Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-
-
 }
