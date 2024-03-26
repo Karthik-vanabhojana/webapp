@@ -36,6 +36,6 @@ public class UserEmail {
     private Date mailSentTiming;
 
     @Column(name = "token")
-    private UUID token;
+    private String token;
 
 }
