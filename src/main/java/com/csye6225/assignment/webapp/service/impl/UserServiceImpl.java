@@ -183,15 +183,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getVerified(String token) throws UserNotverified {
+    public boolean getVerified(String token) throws UserNotverified {
 
         LOGGER.debug("UserServiceImpl. getVerified {} ");
         LOGGER.info("Verifying User......");
 
 UserEmail emailUser=this.userMailRepository.findByToken(token).orElseThrow(()-> new UserNotverified());
 if(emailUser.getMailSentTiming().before(emailUser.getMailSentTiming())) {
+
     emailUser.setMailVerified(true);
     this.userMailRepository.save(emailUser);
+    return true;
+
+}
+else {
+    return false;
 }
 
 

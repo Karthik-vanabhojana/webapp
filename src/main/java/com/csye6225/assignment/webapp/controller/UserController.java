@@ -180,8 +180,10 @@ Publish publish;
     public ResponseEntity<Void> getVerified(@RequestParam String token) throws UserNotverified {
 
 
-        userservice.getVerified(token);
+        if(userservice.getVerified(token))
         return ResponseEntity.status(HttpStatus.OK).build();
+        else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
 
     }
