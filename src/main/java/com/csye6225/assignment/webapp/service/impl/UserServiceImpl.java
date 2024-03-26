@@ -188,8 +188,8 @@ public class UserServiceImpl implements UserService {
         LOGGER.debug("UserServiceImpl. getVerified {} ");
         LOGGER.info("Verifying User......");
 
-UserEmail emailUser=this.userMailRepository.findByToken(token).orElseThrow(()-> new UserNotverified());
-if(emailUser.getMailSentTiming().before(emailUser.getMailSentTiming())) {
+        UserEmail emailUser=this.userMailRepository.findByToken(token).orElseThrow(()-> new UserNotverified());
+if(emailUser.getMailSentTiming().after(new Date())) {
 
     emailUser.setMailVerified(true);
     this.userMailRepository.save(emailUser);
