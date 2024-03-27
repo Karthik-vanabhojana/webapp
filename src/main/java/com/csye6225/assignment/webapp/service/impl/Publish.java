@@ -44,30 +44,26 @@ public class Publish {
     }
 
     private  void publishWithJsonPayload(String jsonPayload) throws IOException, InterruptedException {
-        LOGGER.debug("beforeinitializingtopic");
+        LOGGER.debug("Payload inside Pubsub methods");
 
         TopicName topicName = TopicName.of(projectId, topicId);
-        LOGGER.debug("jsonPayload");
         Publisher publisher = null;
         try {
             publisher = Publisher.newBuilder(topicName).build();
-            LOGGER.debug("after publisher");
             ByteString data = ByteString.copyFromUtf8(jsonPayload);
-            LOGGER.debug("before publisher message");
             PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
-            LOGGER.debug("after publisher PubsubMessage");
             ApiFuture<String> future = publisher.publish(pubsubMessage);
-            LOGGER.debug("after publisher ApiFuture");
 
             ApiFutures.addCallback(future, new ApiFutureCallback<String>() {
                 @Override
                 public void onFailure(Throwable throwable) {
                     if (throwable instanceof ApiException) {
                         ApiException apiException = ((ApiException) throwable);
+                        LOGGER.error("Publication Failed");
+
                         System.out.println(apiException.getStatusCode().getCode());
                         System.out.println(apiException.isRetryable());
                     }
-                    System.out.println("Error publishing message: " + jsonPayload);
                     LOGGER.debug("Error publishing message: " + jsonPayload);
 
                 }
@@ -75,7 +71,9 @@ public class Publish {
                 @Override
                 public void onSuccess(String messageId) {
                         System.out.println("Published message ID: " + messageId);
-                    LOGGER.debug("sucess publishing message: " + messageId);
+                    LOGGER.info("Publication Success");
+
+                    LOGGER.debug("Success publishing message: " + messageId);
 
                 }
             }, MoreExecutors.directExecutor());

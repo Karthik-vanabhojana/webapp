@@ -13,6 +13,8 @@ import com.csye6225.assignment.webapp.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -156,7 +158,7 @@ public class UserServiceImpl implements UserService {
 
 
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getUserId());
+//        userDTO.setId(user.getUserId());
         userDTO.setPassword(user.getPassword());
         userDTO.setUsername(user.getEmail());
         userDTO.setFirst_name(user.getFirstName());
@@ -183,23 +185,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean getVerified(String token) throws UserNotverified {
+    public boolean getVerified(String token,String mail) throws UserNotverified {
 
         LOGGER.debug("UserServiceImpl. getVerified {} ");
         LOGGER.info("Verifying User......");
+        User user = this.userRepository.findByEmail(mail)
+                .orElseThrow(() -> new ResourceNotFoundException("Username", "Username", mail));
 
-        UserEmail emailUser=this.userMailRepository.findByToken(token).orElseThrow(()-> new UserNotverified());
-if(emailUser.getMailSentTiming().after(new Date())) {
 
-    emailUser.setMailVerified(true);
-    this.userMailRepository.save(emailUser);
-    return true;
+        UserEmail emailUser=this.userMailRepository.findByUser(user).orElseThrow(()-> new UserNotverified());
+        if(emailUser.getToken().equals(token)){
+            if(emailUser.getMailSentTiming().after(new Date())) {
+                LOGGER.info("Verifying User......");
 
-}
-else {
-    return false;
-}
 
+                emailUser.setMailVerified(true);
+                this.userMailRepository.save(emailUser);
+
+                return true;
+
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            throw new UserNotverified();
+
+        }
 
     }
 }

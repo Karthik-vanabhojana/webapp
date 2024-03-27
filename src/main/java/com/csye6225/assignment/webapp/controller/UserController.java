@@ -101,13 +101,13 @@ Publish publish;
         HttpHeaders headers = new HttpHeaders();
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
         LOGGER.info("Sucessfully register user with user name: "+registeredUser.getUsername());
-        try {
-            publish.publishWithErrorHandlerExample(userdto.getUsername(),userdto.getFirst_name());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            publish.publishWithErrorHandlerExample(userdto.getUsername(),userdto.getFirst_name());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
@@ -177,13 +177,19 @@ Publish publish;
 
 
     @GetMapping("/v1/user/verify")
-    public ResponseEntity<Void> getVerified(@RequestParam String token) throws UserNotverified {
+    public ResponseEntity<Void> getVerified(@RequestParam String token, @RequestParam String email) throws UserNotverified {
 
 
-        if(userservice.getVerified(token))
-        return ResponseEntity.status(HttpStatus.OK).build();
-        else
+        if(userservice.getVerified(token,email)){
+            LOGGER.info("Verification sucessful");
+            return ResponseEntity.status(HttpStatus.OK).build();
+
+
+        }
+        else{
+            LOGGER.error("Session Ended");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
 
     }
