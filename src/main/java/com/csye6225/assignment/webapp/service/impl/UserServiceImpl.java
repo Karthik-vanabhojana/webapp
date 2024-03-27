@@ -197,19 +197,16 @@ public class UserServiceImpl implements UserService {
         if(emailUser.getToken().equals(token)){
             if(emailUser.getMailSentTiming().after(new Date())) {
                 LOGGER.info("Verifying User......");
-
-
                 emailUser.setMailVerified(true);
                 this.userMailRepository.save(emailUser);
-
                 return true;
-
             }
             else {
                 return false;
             }
         }
         else {
+        LOGGER.error("Invalid Token");
             throw new UserNotverified();
 
         }

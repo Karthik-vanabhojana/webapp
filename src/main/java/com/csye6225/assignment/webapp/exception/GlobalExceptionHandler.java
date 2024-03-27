@@ -132,8 +132,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotverified.class)
     public ResponseEntity<Void> userVerified(UserNotverified ex){
-        LOGGER.debug("GlobalExceptionHandler. userVerified {} ");
-        LOGGER.error("Invalid Verification Credentials");
         return ResponseEntity.status(401)
                 .cacheControl(CacheControl.noCache())
                 .build();

@@ -52,17 +52,20 @@ jobs:
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
-      - name: Create application.properties file
-        run: |
-          mkdir -p src/main/resources/
-          echo "spring.datasource.url=jdbc:mysql://localhost:3306/networkscsye6225?createDatabaseIfNotExist=true" > src/main/resources/application.properties
-          echo "spring.datasource.username=${{ secrets.DB_USERNAME }}" >> src/main/resources/application.properties
-          echo "spring.datasource.password=${{ secrets.DB_PASSWORD }}" >> src/main/resources/application.properties
-          echo "spring.datasource.hikari.connection-timeout=3000" >> src/main/resources/application.properties
-          echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> src/main/resources/application.properties
-          echo "spring.jpa.hibernate.ddl-auto=update" >> src/main/resources/application.properties
-          echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> src/main/resources/application.properties
-          echo "spring.jpa.show-sql=true" >> src/main/resources/application.properties
+      - name: Run Spring Boot tests
+        run: mvn test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/networkscsye6225?createDatabaseIfNotExist=true
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: "3000"
+          SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+          SPRING_JPA_SHOW_SQL: "true"
+          PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
+          SECRET_KEY: ${{secrets.SECRET_KEY}}
+
 
       - name: Start MySQL Server
         run: |
