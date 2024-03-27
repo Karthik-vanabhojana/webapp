@@ -20,6 +20,7 @@ jobs:
       PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
       SECRET_KEY: ${{secrets.SECRET_KEY}}
 
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,6 +52,7 @@ jobs:
 
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
+
 
       - name: Run Spring Boot tests
         run: mvn test

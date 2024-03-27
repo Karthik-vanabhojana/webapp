@@ -7,6 +7,17 @@ on:
 jobs:
   java-test:
     runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      SOURCE_IMAGE_FAMILY: ${{ secrets.SOURCE_IMAGE_FAMILY }}
+      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+      ZONE: ${{ secrets.ZONE }}
+      IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      CREDENTIALS: ${{ secrets.GCP_CREDENTIALS}}
+      PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
+      SECRET_KEY: ${{secrets.SECRET_KEY}}
 
     steps:
       - name: Checkout code
@@ -35,6 +46,7 @@ jobs:
 
       - name: Build Dependency
         run: mvn -B clean package -DskipTests
+
 
       - name: Run Spring Boot tests
         run: mvn test
