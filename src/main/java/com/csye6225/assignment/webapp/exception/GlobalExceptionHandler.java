@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotverified.class)
     public ResponseEntity<Void> userVerified(UserNotverified ex){
         LOGGER.debug("GlobalExceptionHandler. userVerified {} ");
-//        LOGGER.error("Duplicate User Id and User is already present");
+        LOGGER.error("Invalid Verification Credentials");
         return ResponseEntity.status(401)
                 .cacheControl(CacheControl.noCache())
                 .build();
