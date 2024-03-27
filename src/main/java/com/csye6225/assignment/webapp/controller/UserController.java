@@ -101,13 +101,13 @@ Publish publish;
         HttpHeaders headers = new HttpHeaders();
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
         LOGGER.info("Sucessfully register user with user name: "+registeredUser.getUsername());
-//        try {
-//            publish.publishWithErrorHandlerExample(userdto.getUsername(),userdto.getFirst_name());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            publish.publishWithErrorHandlerExample(userdto.getUsername(),userdto.getFirst_name());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
