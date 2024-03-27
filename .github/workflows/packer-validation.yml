@@ -20,7 +20,6 @@ jobs:
       PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
       SECRET_KEY: ${{secrets.SECRET_KEY}}
 
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,8 +38,8 @@ jobs:
 
       - name: Set up JRE for Java
         run: |
-          sudo apt-get update
           sudo apt-get install -y openjdk-17-jre
+
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
@@ -53,6 +52,15 @@ jobs:
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
+      - name: Start MySQL Server
+        run: |
+          sudo service mysql start
+
+      - name: Package with Maven
+        run: mvn clean install -DskipTests
+
+      - name: Compile with Maven
+        run: mvn compile
 
       - name: Run Spring Boot tests
         run: mvn test
@@ -67,18 +75,6 @@ jobs:
           SPRING_JPA_SHOW_SQL: "true"
           PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
           SECRET_KEY: ${{secrets.SECRET_KEY}}
-
-
-      - name: Start MySQL Server
-        run: |
-          sudo service mysql start
-
-      - name: Package with Maven
-        run: mvn clean install
-
-      - name: Compile with Maven
-        run: mvn compile
-
 
 
       - name: Install zip

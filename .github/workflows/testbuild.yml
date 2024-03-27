@@ -7,6 +7,7 @@ on:
 jobs:
   java-test:
     runs-on: ubuntu-latest
+
     env:
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
       SOURCE_IMAGE_FAMILY: ${{ secrets.SOURCE_IMAGE_FAMILY }}
@@ -21,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Configuring log
         run: |
@@ -35,18 +36,31 @@ jobs:
           sudo chown runner:runner /var/log/webapp/application.log
           ls -l /var/log/webapp/application.log
 
+      - name: Set up JRE for Java
+        run: |
+          sudo apt-get install -y openjdk-17-jre
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
       - name: Start MySQL Server
         run: |
           sudo service mysql start
 
-      - name: Set up JRE for Java
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y openjdk-17-jre
+      - name: Package with Maven
+        run: mvn clean install -DskipTests
 
-      - name: Build Dependency
-        run: mvn -B clean package -DskipTests
-
+      - name: Compile with Maven
+        run: mvn compile
 
       - name: Run Spring Boot tests
         run: mvn test
