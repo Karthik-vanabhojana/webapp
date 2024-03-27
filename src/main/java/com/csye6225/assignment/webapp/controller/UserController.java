@@ -177,18 +177,20 @@ Publish publish;
 
 
     @GetMapping("/v1/user/verify")
-    public ResponseEntity<Void> getVerified(@RequestParam String token, @RequestParam String email) throws UserNotverified {
+    public ResponseEntity<String> getVerified(@RequestParam String token, @RequestParam String email) throws UserNotverified {
 
 
         if(userservice.getVerified(token,email)){
             LOGGER.info("Verification sucessful");
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK).body("Success Fully Verified");
+
 
 
         }
         else{
             LOGGER.error("Session Ended");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Secrets Expired");
+
         }
 
 

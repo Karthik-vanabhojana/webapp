@@ -36,19 +36,19 @@ jobs:
       - name: Build Dependency
         run: mvn -B clean package -DskipTests
 
-#      - name: Run Spring Boot tests
-#        run: mvn test
-#        env:
-#          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/networkscsye6225?createDatabaseIfNotExist=true
-#          SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USER }}
-#          SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-#          SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: "3000"
-#          SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
-#          SPRING_JPA_HIBERNATE_DDL_AUTO: update
-#          SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-#          SPRING_JPA_SHOW_SQL: "true"
-#          PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
-#          SECRET_KEY: ${{secrets.SECRET_KEY}}
+      - name: Run Spring Boot tests
+        run: mvn test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/networkscsye6225?createDatabaseIfNotExist=true
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.MYSQL_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: "3000"
+          SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+          SPRING_JPA_SHOW_SQL: "true"
+          PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
+          SECRET_KEY: ${{secrets.SECRET_KEY}}
 
       - name: Result Success Message
         if: success()
