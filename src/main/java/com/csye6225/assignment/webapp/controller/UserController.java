@@ -35,8 +35,7 @@ import java.util.List;
 
 @RestController
 public class UserController {
-    @Value("${SECRET_KEY}")
-    private  String SECRET_KEY;
+
 @Autowired
 Publish publish;
     @Autowired
