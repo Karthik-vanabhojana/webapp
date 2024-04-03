@@ -132,6 +132,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotverified.class)
     public ResponseEntity<Void> userVerified(UserNotverified ex){
+        return ResponseEntity.status(403)
+                .cacheControl(CacheControl.noCache())
+                .build();
+    }
+    @ExceptionHandler(InvalidToken.class)
+    public ResponseEntity<Void> invalidToken(InvalidToken ex){
         return ResponseEntity.status(401)
                 .cacheControl(CacheControl.noCache())
                 .build();

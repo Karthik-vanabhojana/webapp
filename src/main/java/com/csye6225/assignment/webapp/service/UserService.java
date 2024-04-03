@@ -3,6 +3,7 @@ package com.csye6225.assignment.webapp.service;
 import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.exception.BadRequestEmail;
 import com.csye6225.assignment.webapp.exception.DuplicateUserNameException;
+import com.csye6225.assignment.webapp.exception.InvalidToken;
 import com.csye6225.assignment.webapp.exception.UserNotverified;
 
 public interface UserService {
@@ -12,5 +13,5 @@ public interface UserService {
     UserDTO getuser(String mail);
      boolean checkDatabaseConnection();
 
-    boolean getVerified(String userId, String email) throws UserNotverified;
+    boolean getVerified(String userId, String email) throws UserNotverified, InvalidToken;
 }

@@ -7,6 +7,7 @@ import com.csye6225.assignment.webapp.dto.UpdateValid;
 import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.exception.BadRequestEmail;
 import com.csye6225.assignment.webapp.exception.DuplicateUserNameException;
+import com.csye6225.assignment.webapp.exception.InvalidToken;
 import com.csye6225.assignment.webapp.exception.UserNotverified;
 import com.csye6225.assignment.webapp.service.UserService;
 
@@ -177,7 +178,7 @@ Publish publish;
 
 
     @GetMapping("/v1/user/verify")
-    public ResponseEntity<String> getVerified(@RequestParam String token, @RequestParam String email) throws UserNotverified {
+    public ResponseEntity<String> getVerified(@RequestParam String token, @RequestParam String email) throws UserNotverified, InvalidToken {
 
 
         if(userservice.getVerified(token,email)){

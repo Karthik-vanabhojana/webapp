@@ -3,10 +3,7 @@ package com.csye6225.assignment.webapp.service.impl;
 import com.csye6225.assignment.webapp.dto.UserDTO;
 import com.csye6225.assignment.webapp.entity.User;
 import com.csye6225.assignment.webapp.entity.UserEmail;
-import com.csye6225.assignment.webapp.exception.BadRequestEmail;
-import com.csye6225.assignment.webapp.exception.DuplicateUserNameException;
-import com.csye6225.assignment.webapp.exception.ResourceNotFoundException;
-import com.csye6225.assignment.webapp.exception.UserNotverified;
+import com.csye6225.assignment.webapp.exception.*;
 import com.csye6225.assignment.webapp.repository.UserMailRepository;
 import com.csye6225.assignment.webapp.repository.UserRepository;
 import com.csye6225.assignment.webapp.service.UserService;
@@ -185,7 +182,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean getVerified(String token,String mail) throws UserNotverified {
+    public boolean getVerified(String token,String mail) throws UserNotverified, InvalidToken {
 
         LOGGER.debug("UserServiceImpl. getVerified {} ");
         LOGGER.info("Verifying User......");
@@ -193,7 +190,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Username", "Username", mail));
 
 
-        UserEmail emailUser=this.userMailRepository.findByUser(user).orElseThrow(()-> new UserNotverified());
+        UserEmail emailUser=this.userMailRepository.findByUser(user).orElseThrow(()-> new InvalidToken());
         if(emailUser.getToken().equals(token)){
             if(emailUser.getMailSentTiming().after(new Date())) {
                 LOGGER.info("Verifying User......");
