@@ -183,7 +183,7 @@ Publish publish;
 
         if(userservice.getVerified(token,email)){
             LOGGER.info("Verification sucessful");
-            return ResponseEntity.status(HttpStatus.OK).body("Success Fully Verified");
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully Verified. You can Now View the details on the self");
 
 
 
