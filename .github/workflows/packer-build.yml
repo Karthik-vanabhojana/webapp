@@ -109,8 +109,12 @@ jobs:
       - name: Run Packer build
         id: packer
         run: |
-          packer build -var="project_id=${{ secrets.PROJECT_ID }}" -var="source_image_family=${{ secrets.SOURCE_IMAGE_FAMILY }}" -var="ssh_username=${{ secrets.SSH_USERNAME }}" -var="zone=${{ secrets.ZONE }}" -var="image_name=${{ secrets.IMAGE_NAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_username=${{ secrets.DB_USERNAME }}" infrastucture/packer/packer.pkr.hcl
-  
+          IMAGE_CREATION_OUTPUT=$(packer build -var="project_id=${{ secrets.PROJECT_ID }}" -var="source_image_family=${{ secrets.SOURCE_IMAGE_FAMILY }}" -var="ssh_username=${{ secrets.SSH_USERNAME }}" -var="zone=${{ secrets.ZONE }}" -var="image_name=${{ secrets.IMAGE_NAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_username=${{ secrets.DB_USERNAME }}" infrastucture/packer/packer.pkr.hcl)
+          IMAGE_NAME1=$(echo "$IMAGE_CREATION_OUTPUT" | grep -oP '(?<=image: ).*')
+           echo "::set-output name=image_name::$IMAGE_NAME1"
+
+      - name: Store image name as environment variable
+        run: echo "IMAGE_NAME1=${{ steps.packer.outputs.image_name }}" >> $GITHUB_ENV
 
 
       - name: Create new Instance Template version
@@ -123,7 +127,7 @@ jobs:
             --service-account=${{ env.VM_SERVICE_ACCOUNT_EMAIL }} \
             --network-tier=${{ env.VM_NETWORK_TIER }} \
             --subnet=${{ env.VM_SUBNETWORK }} \
-            --image=${{ steps.packer.outputs.image_id }} \
+            --image=${{ env.IMAGE_NAME1 }} \
             --metadata=startup-script='#!/bin/bash
               echo "Executing startup script..."
               db_name_suffix="${{ env.VM_DB_NAME_SUFFIX }}"
