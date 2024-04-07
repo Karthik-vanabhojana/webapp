@@ -95,20 +95,21 @@ jobs:
         uses: hashicorp/setup-packer@main
 
       - name: Set packer init
-        working-directory: infrastructure/packer/
+        working-directory: infrastucture/packer/
         run: packer init .
 
+
       - name: Packer fmt
-        working-directory: infrastructure/packer/
+        working-directory: infrastucture/packer/
         run: packer fmt -check .
 
       - name: Set packer validate
-        run: packer validate -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastructure/packer/packer.pkr.hcl
+        run: packer validate -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastucture/packer/packer.pkr.hcl
 
       - name: Run Packer build
         id: packer
         run: |
-          IMAGE_ID=$(packer build -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastructure/packer/packer.pkr.hcl)
+          IMAGE_ID=$(packer build -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastucture/packer/packer.pkr.hcl)
           echo "::set-env name=IMAGE_ID::$IMAGE_ID"
 
       - name: Create new Instance Template version
