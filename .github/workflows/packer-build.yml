@@ -113,9 +113,7 @@ jobs:
           echo "IMAGE_ID=${IMAGE_ID}" >> $GITHUB_ENV
           echo "::set-output name=image_id::$IMAGE_ID"
 
-      - name: Set Env for image generated
-        env:
-          IMAGE_NAME: ${{ steps.packer.outputs.image_id }}
+
 
       - name: Create new Instance Template version
         run: |
@@ -127,7 +125,7 @@ jobs:
             --service-account=${{ env.VM_SERVICE_ACCOUNT_EMAIL }} \
             --network-tier=${{ env.VM_NETWORK_TIER }} \
             --subnet=${{ env.VM_SUBNETWORK }} \
-            --image=${{ env.IMAGE_NAME }} \
+            --image=${{ steps.packer.outputs.image_id }} \
             --metadata-from-file=startup-script=-
           content: |
             #!/bin/bash
