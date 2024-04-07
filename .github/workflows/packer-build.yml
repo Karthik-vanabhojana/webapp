@@ -114,9 +114,8 @@ jobs:
           echo "::set-output name=image_id::$IMAGE_ID"
 
       - name: Set Env for image generated
-        run:
         env:
-          IMAGE_NAME: $IMAGE_ID
+          IMAGE_NAME: ${{ steps.packer.outputs.image_id }}
 
       - name: Create new Instance Template version
         run: |
