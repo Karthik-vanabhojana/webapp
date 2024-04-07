@@ -17,18 +17,18 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       CREDENTIALS: ${{ secrets.GCP_CREDENTIALS}}
-      PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
-      SECRET_KEY: ${{secrets.SECRET_KEY}}
-      VM_REGION: ${{secrets.VM_REGION}}
-      VM_MACHINE_TYPE: ${{secrets.VM_MACHINE_TYPE}}
-      VM_SERVICE_ACCOUNT_EMAIL: ${{secrets.VM_SERVICE_ACCOUNT_EMAIL}}
-      VM_SUBNETWORK: ${{secrets.VM_SUBNETWORK}}
-      VM_NETWORK_TIER: ${{secrets.VM_NETWORK_TIER}}
-      VM_HTTP_TARGET_TAGS: ${{secrets.VM_HTTP_TARGET_TAGS}}
-      vm_db_name_suffix: ${{secrets.vm_db_name_suffix}}
-      vm_db_password: ${{secrets.vm_db_password}}
-      vm_db_name: ${{secrets.vm_db_name}}
-      vm_db_url: ${{secrets.vm_db_url}}
+      PUBSUB_TOPIC_ID: ${{ secrets.PUBSUB_TOPIC_ID }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      VM_REGION: ${{ secrets.VM_REGION }}
+      VM_MACHINE_TYPE: ${{ secrets.VM_MACHINE_TYPE }}
+      VM_SERVICE_ACCOUNT_EMAIL: ${{ secrets.VM_SERVICE_ACCOUNT_EMAIL }}
+      VM_SUBNETWORK: ${{ secrets.VM_SUBNETWORK }}
+      VM_NETWORK_TIER: ${{ secrets.VM_NETWORK_TIER }}
+      VM_HTTP_TARGET_TAGS: ${{ secrets.VM_HTTP_TARGET_TAGS }}
+      VM_DB_NAME_SUFFIX: ${{ secrets.vm_db_name_suffix }}
+      VM_DB_PASSWORD: ${{ secrets.vm_db_password }}
+      VM_DB_NAME: ${{ secrets.vm_db_name }}
+      VM_DB_URL: ${{ secrets.vm_db_url }}
 
     steps:
       - name: Checkout code
@@ -58,7 +58,6 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
 
-
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
@@ -83,8 +82,8 @@ jobs:
           SPRING_JPA_HIBERNATE_DDL_AUTO: update
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
           SPRING_JPA_SHOW_SQL: "true"
-          PUBSUB_TOPIC_ID: ${{secrets.PUBSUB_TOPIC_ID}}
-          SECRET_KEY: ${{secrets.SECRET_KEY}}
+          PUBSUB_TOPIC_ID: ${{ secrets.PUBSUB_TOPIC_ID }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
       - name: Install zip
         run: sudo apt-get install -y zip
@@ -96,24 +95,21 @@ jobs:
         uses: hashicorp/setup-packer@main
 
       - name: Set packer init
-        working-directory: infrastucture/packer/
+        working-directory: infrastructure/packer/
         run: packer init .
 
       - name: Packer fmt
-        working-directory: infrastucture/packer/
+        working-directory: infrastructure/packer/
         run: packer fmt -check .
 
       - name: Set packer validate
-        run: packer validate -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastucture/packer/packer.pkr.hcl
-
+        run: packer validate -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastructure/packer/packer.pkr.hcl
 
       - name: Run Packer build
         id: packer
         run: |
-          IMAGE_ID=$(packer build -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}"  infrastucture/packer/packer.pkr.hcl)
+          IMAGE_ID=$(packer build -var="project_id=${PROJECT_ID}" -var="source_image_family=${SOURCE_IMAGE_FAMILY}" -var="ssh_username=${SSH_USERNAME}" -var="zone=${ZONE}" -var="image_name=${IMAGE_NAME}" -var="db_password=${DB_PASSWORD}" -var="db_username=${DB_USERNAME}" infrastructure/packer/packer.pkr.hcl)
           echo "::set-env name=IMAGE_ID::$IMAGE_ID"
-
-
 
       - name: Create new Instance Template version
         run: |
@@ -125,22 +121,17 @@ jobs:
             --service-account=${{ env.VM_SERVICE_ACCOUNT_EMAIL }} \
             --network-tier=${{ env.VM_NETWORK_TIER }} \
             --subnet=${{ env.VM_SUBNETWORK }} \
-            --image=${{ env.IMAGE_SOURCE }} \
+            --image=${{ env.IMAGE_NAME }} \
             --metadata-from-file=startup-script=-
           content: |
             #!/bin/bash
-#      vm_db_password: ${{secrets.vm_db_password}}
-#      vm_db_name: ${{secrets.vm_db_name}}
-#      vm_db_url: ${{secrets.vm_db_url}}
             echo "Executing startup script..."
-
-            db_name_suffix="${env.vm_db_name_suffix}"
-            db_password="${env.vm_db_password}"
-            db_name="${env.vm_db_name}"
-            db_url="${env.vm_db_url}"
+            db_name_suffix="${{ env.VM_DB_NAME_SUFFIX }}"
+            db_password="${{ env.VM_DB_PASSWORD }}"
+            db_name="${{ env.VM_DB_NAME }}"
+            db_url="${{ env.VM_DB_URL }}"
             touch /opt/csye6225/application.properties
-
-      # Write to application properties file
+            # Write to application properties file
             echo "spring.datasource.url=jdbc:mysql://${db_url}/${db_name}" >> /opt/csye6225/application.properties
             echo "spring.datasource.username=${db_name_suffix}" >> /opt/csye6225/application.properties
             echo "spring.datasource.password=${db_password}" >> /opt/csye6225/application.properties
@@ -151,35 +142,7 @@ jobs:
             echo "spring.jpa.show-sql=true" >> /opt/csye6225/application.properties
             echo "PUBSUB_TOPIC_ID=verify_email" >> /opt/csye6225/application.properties
             echo "PROJECT_ID=dev-gcp-415318" >> /opt/csye6225/application.properties
-
             echo "Startup script execution completed."
-
-#      - name: Configure managed instance group to use new template
-#        run: |
-#          gcloud compute instance-groups managed set-instance-template $INSTANCE_GROUP_NAME \
-#            --template new-template \
-#            --zone=$ZONE \
-#            --project=$PROJECT_ID
-#          # Adjust the parameters according to your setup
-#
-#      - name: Issue command to managed instance group to recreate instances
-#        run: |
-#          gcloud compute instance-groups managed recreate-instances $INSTANCE_GROUP_NAME \
-#            --zone=$ZONE \
-#            --project=$PROJECT_ID
-#          # Adjust the parameters according to your setup
-#
-#      - name: Wait for managed instance group refresh
-#        run: |
-#          while true; do
-#            status=$(gcloud compute instance-groups managed describe $INSTANCE_GROUP_NAME --format='value(status)');
-#            if [[ "$status" == "RECREATING" ]]; then
-#              sleep 10;
-#            else
-#              break;
-#            fi;
-#          done;
-
 
 
       - name: Result Success Message
