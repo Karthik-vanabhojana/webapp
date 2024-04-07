@@ -108,47 +108,45 @@ jobs:
 
       - name: Run Packer build
         id: packer
-        run: |
-          IMAGE_CREATION_OUTPUT=$(packer build -var="project_id=${{ secrets.PROJECT_ID }}" -var="source_image_family=${{ secrets.SOURCE_IMAGE_FAMILY }}" -var="ssh_username=${{ secrets.SSH_USERNAME }}" -var="zone=${{ secrets.ZONE }}" -var="image_name=${{ secrets.IMAGE_NAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_username=${{ secrets.DB_USERNAME }}" infrastucture/packer/packer.pkr.hcl)
-          IMAGE_NAME1=$(echo "$IMAGE_CREATION_OUTPUT" | grep -oP '(?<=image: ).*')
-           echo "::set-output name=image_name::$IMAGE_NAME1"
-
-      - name: Store image name as environment variable
-        run: echo "IMAGE_NAME1=${{ steps.packer.outputs.image_name }}" >> $GITHUB_ENV
+        run: | 
+          packer build -var="project_id=${{ secrets.PROJECT_ID }}" -var="source_image_family=${{ secrets.SOURCE_IMAGE_FAMILY }}" -var="ssh_username=${{ secrets.SSH_USERNAME }}" -var="zone=${{ secrets.ZONE }}" -var="image_name=${{ secrets.IMAGE_NAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_username=${{ secrets.DB_USERNAME }}" infrastucture/packer/packer.pkr.hcl
+          NewImage=$(jq -r '.builds[-1].artifact_id' manifest.json | cut -d ":" -f2)
+          echo $NewImage
+  
 
 
-      - name: Create new Instance Template version
-        run: |
-          gcloud compute instance-templates create new-template \
-            --project=${{ env.PROJECT_ID }} \
-            --region=${{ env.VM_REGION }} \
-            --machine-type=${{ env.VM_MACHINE_TYPE }} \
-            --tags=${{ env.VM_HTTP_TARGET_TAGS }} \
-            --service-account=${{ env.VM_SERVICE_ACCOUNT_EMAIL }} \
-            --network-tier=${{ env.VM_NETWORK_TIER }} \
-            --subnet=${{ env.VM_SUBNETWORK }} \
-            --image=${{ env.IMAGE_NAME1 }} \
-            --metadata=startup-script='#!/bin/bash
-              echo "Executing startup script..."
-              db_name_suffix="${{ env.VM_DB_NAME_SUFFIX }}"
-              db_password="${{ env.VM_DB_PASSWORD }}"
-              db_name="${{ env.VM_DB_NAME }}"
-              db_url="${{ env.VM_DB_URL }}"
-              touch /opt/csye6225/application.properties
-              # Write to application properties file
-              echo "spring.datasource.url=jdbc:mysql://${db_url}/${db_name}" >> /opt/csye6225/application.properties
-              echo "spring.datasource.username=${db_name_suffix}" >> /opt/csye6225/application.properties
-              echo "spring.datasource.password=${db_password}" >> /opt/csye6225/application.properties
-              echo "spring.datasource.hikari.connection-timeout=3000" >> /opt/csye6225/application.properties
-              echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> /opt/csye6225/application.properties
-              echo "spring.jpa.hibernate.ddl-auto=update" >> /opt/csye6225/application.properties
-              echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> /opt/csye6225/application.properties
-              echo "spring.jpa.show-sql=true" >> /opt/csye6225/application.properties
-              echo "PUBSUB_TOPIC_ID=verify_email" >> /opt/csye6225/application.properties
-              echo "PROJECT_ID=dev-gcp-415318" >> /opt/csye6225/application.properties
-              echo "Startup script execution completed."'
-          
-          
+#      - name: Create new Instance Template version
+#        run: |
+#          gcloud compute instance-templates create new-template \
+#            --project=${{ env.PROJECT_ID }} \
+#            --region=${{ env.VM_REGION }} \
+#            --machine-type=${{ env.VM_MACHINE_TYPE }} \
+#            --tags=${{ env.VM_HTTP_TARGET_TAGS }} \
+#            --service-account=${{ env.VM_SERVICE_ACCOUNT_EMAIL }} \
+#            --network-tier=${{ env.VM_NETWORK_TIER }} \
+#            --subnet=${{ env.VM_SUBNETWORK }} \
+#            --image=${{ steps.packer.outputs.image_id }} \
+#            --metadata=startup-script='#!/bin/bash
+#              echo "Executing startup script..."
+#              db_name_suffix="${{ env.VM_DB_NAME_SUFFIX }}"
+#              db_password="${{ env.VM_DB_PASSWORD }}"
+#              db_name="${{ env.VM_DB_NAME }}"
+#              db_url="${{ env.VM_DB_URL }}"
+#              touch /opt/csye6225/application.properties
+#              # Write to application properties file
+#              echo "spring.datasource.url=jdbc:mysql://${db_url}/${db_name}" >> /opt/csye6225/application.properties
+#              echo "spring.datasource.username=${db_name_suffix}" >> /opt/csye6225/application.properties
+#              echo "spring.datasource.password=${db_password}" >> /opt/csye6225/application.properties
+#              echo "spring.datasource.hikari.connection-timeout=3000" >> /opt/csye6225/application.properties
+#              echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> /opt/csye6225/application.properties
+#              echo "spring.jpa.hibernate.ddl-auto=update" >> /opt/csye6225/application.properties
+#              echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> /opt/csye6225/application.properties
+#              echo "spring.jpa.show-sql=true" >> /opt/csye6225/application.properties
+#              echo "PUBSUB_TOPIC_ID=verify_email" >> /opt/csye6225/application.properties
+#              echo "PROJECT_ID=dev-gcp-415318" >> /opt/csye6225/application.properties
+#              echo "Startup script execution completed."'
+#
+#
 
       - name: Result Success Message
         if: success()
