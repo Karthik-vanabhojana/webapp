@@ -109,10 +109,8 @@ jobs:
       - name: Run Packer build
         id: packer
         run: |
-          IMAGE_ID=$(packer build -var="project_id=${{ secrets.PROJECT_ID }}" -var="source_image_family=${{ secrets.SOURCE_IMAGE_FAMILY }}" -var="ssh_username=${{ secrets.SSH_USERNAME }}" -var="zone=${{ secrets.ZONE }}" -var="image_name=${{ secrets.IMAGE_NAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_username=${{ secrets.DB_USERNAME }}" infrastucture/packer/packer.pkr.hcl)
-          echo "IMAGE_ID=${IMAGE_ID}" >> $GITHUB_ENV
-          echo "::set-output name=image_id::$IMAGE_ID"
-
+          packer build -var="project_id=${{ secrets.PROJECT_ID }}" -var="source_image_family=${{ secrets.SOURCE_IMAGE_FAMILY }}" -var="ssh_username=${{ secrets.SSH_USERNAME }}" -var="zone=${{ secrets.ZONE }}" -var="image_name=${{ secrets.IMAGE_NAME }}" -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_username=${{ secrets.DB_USERNAME }}" infrastucture/packer/packer.pkr.hcl
+  
 
 
       - name: Create new Instance Template version
