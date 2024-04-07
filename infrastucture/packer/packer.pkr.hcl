@@ -62,7 +62,7 @@ build {
   sources = ["source.googlecompute.image-creation"]
 
   post-processor "manifest" {
-    output = "manifest.json"
+    output     = "manifest.json"
     strip_path = true
     custom_data = {
       my_custom_data = "example"
