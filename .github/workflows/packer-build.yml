@@ -150,19 +150,19 @@ jobs:
               echo "PROJECT_ID=dev-gcp-415318" >> /opt/csye6225/application.properties
               echo "Startup script execution completed."'
 
-      - name: Update Group Manager
-        env:
-          INSTANCE_GROUP_NAME: "webappserver-igm"
-          INSTANCE_TEMPLATE_NAME: "new-template"
-          ZONE_OR_REGION: "us-central1"
-        run : |
-          gcloud compute instance-groups managed rolling-action start-update ${{env.INSTANCE_GROUP_NAME}}\
-          --version=[template=${{env.INSTANCE_TEMPLATE_NAME}}] \
-          --region=${{ env.ZONE_OR_REGION}}
-
-          gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}}\
-          --version-target-reached \
-          --region=${{ env.ZONE_OR_REGION}}
+#      - name: Update Group Manager
+#        env:
+#          INSTANCE_GROUP_NAME: "webappserver-igm"
+#          INSTANCE_TEMPLATE_NAME: "new-template"
+#          ZONE_OR_REGION: "us-central1"
+#        run : |
+#          gcloud compute instance-groups managed rolling-action start-update ${{env.INSTANCE_GROUP_NAME}}\
+#          --version=[template=${{env.INSTANCE_TEMPLATE_NAME}}] \
+#          --region=${{ env.ZONE_OR_REGION}}
+#
+#          gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}}\
+#          --version-target-reached \
+#          --region=${{ env.ZONE_OR_REGION}}
 
       - name: Result Success Message
         if: success()
