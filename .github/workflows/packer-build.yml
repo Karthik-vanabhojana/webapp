@@ -121,6 +121,7 @@ jobs:
         run: |
           gcloud compute instance-templates create new-template \
             --project=${{ env.PROJECT_ID }} \
+            --region=${{ env.VM_REGION }} \
             --instance-template-region=${{ env.VM_REGION }} \
             --machine-type=${{ env.VM_MACHINE_TYPE }} \
             --tags=${{ env.VM_HTTP_TARGET_TAGS }} \
