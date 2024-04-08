@@ -156,13 +156,13 @@ jobs:
           INSTANCE_TEMPLATE_NAME: "new-template"
           ZONE_OR_REGION: "us-central1"
         run : |
-          gcloud compute instance-groups managed rolling-action start-update env.INSTANCE_GROUP_NAME \
-          --version=template=env.INSTANCE_TEMPLATE_NAME \
-          --zone=env.ZONE_OR_REGION
+          gcloud compute instance-groups managed rolling-action start-update ${{env.INSTANCE_GROUP_NAME}}\
+          --version=template=${{env.INSTANCE_TEMPLATE_NAME}} \
+          --zone=${{ env.ZONE_OR_REGION}}
 
-          gcloud compute instance-groups managed wait-until env.INSTANCE_GROUP_NAME \
+          gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}}\
           --version-target-reached \
-          --zone=env.ZONE_OR_REGION
+          --zone=${{ env.ZONE_OR_REGION}}
 
       - name: Result Success Message
         if: success()
