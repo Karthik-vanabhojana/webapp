@@ -152,9 +152,22 @@ jobs:
 
       - name: Update Group Manager
         run : |
-          gcloud compute instance-groups managed rolling-action start-update webappserver-igm  \
-            --version=template=new-template 
-            [ --zone="us-central1-c", "us-central1-b", "us-central1-f" | --region="us-central1 ]
+          - name: Update and Wait for Instance Group
+  # Start the rolling update
+              gcloud compute instance-groups managed rolling-action start-update INSTANCE_GROUP_NAME \
+              --version=template=INSTANCE_TEMPLATE_NAME \
+              --zone=ZONE_OR_REGION
+          
+        
+    # Wait until the version target is reached
+              gcloud compute instance-groups managed wait-until INSTANCE_GROUP_NAME \
+              --version-target-reached \
+              --zone=ZONE_OR_REGION
+
+        env:
+          INSTANCE_GROUP_NAME: "webappserver-igm"
+          INSTANCE_TEMPLATE_NAME: "new-template"
+          ZONE_OR_REGION: "us-central1"
       - name: Result Success Message
         if: success()
         run: echo "Successful CI"
