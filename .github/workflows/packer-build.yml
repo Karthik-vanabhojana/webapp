@@ -152,7 +152,6 @@ jobs:
 
       - name: Update Group Manager
         run : |
-          - name: Update and Wait for Instance Group
   # Start the rolling update
               gcloud compute instance-groups managed rolling-action start-update INSTANCE_GROUP_NAME \
               --version=template=INSTANCE_TEMPLATE_NAME \
