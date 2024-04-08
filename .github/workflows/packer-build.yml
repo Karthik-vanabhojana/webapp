@@ -153,7 +153,8 @@ jobs:
       - name: Update Group Manager
         run : |
           gcloud compute instance-groups managed rolling-action start-update webappserver-igm  \
-            --version=template=new-template [ --zone="us-central1-c", "us-central1-b", "us-central1-f" | --region="us-central1 ]
+            --version=template=new-template 
+            [ --zone="us-central1-c", "us-central1-b", "us-central1-f" | --region="us-central1 ]
       - name: Result Success Message
         if: success()
         run: echo "Successful CI"
