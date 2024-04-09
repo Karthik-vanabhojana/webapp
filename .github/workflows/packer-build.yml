@@ -130,7 +130,7 @@ jobs:
             --subnet=${{ env.VM_SUBNETWORK }} \
             --image=${{ env.NEW_IMAGE }} \
             --boot-disk-type=pd-standard \
-            --scopes=cloud-platform
+            --scopes=https://www.googleapis.com/auth/cloud-platform \
             --metadata=startup-script='#!/bin/bash
               echo "Executing startup script..."
               db_name_suffix="${{ env.VM_DB_NAME_SUFFIX }}"
@@ -161,9 +161,9 @@ jobs:
             --version='template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}' \
             --region=${{ env.ZONE_OR_REGION}}
 
-          gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}}\
-            --version-target-reached \
-            --region=${{ env.ZONE_OR_REGION}}
+            gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}}\
+              --version-target-reached \
+              --region=${{ env.ZONE_OR_REGION}}
 
       - name: Result Success Message
         if: success()
