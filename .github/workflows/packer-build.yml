@@ -149,7 +149,7 @@ jobs:
               echo "spring.jpa.show-sql=true" >> /opt/csye6225/application.properties
               echo "PUBSUB_TOPIC_ID=verify_email" >> /opt/csye6225/application.properties
               echo "PROJECT_ID=dev-gcp-415318" >> /opt/csye6225/application.properties
-              echo "Startup script execution completed."'
+              echo "Startup script execution completed."
 
       - name: Update Group Manager
         env:
