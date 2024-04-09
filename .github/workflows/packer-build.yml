@@ -130,8 +130,8 @@ jobs:
             --subnet=${{ env.VM_SUBNETWORK }} \
             --image=${{ env.NEW_IMAGE }} \
             --boot-disk-type=pd-standard \
-            --metadata=startup-script='#!/bin/bash
             --scope=cloud-platform
+            --metadata=startup-script='#!/bin/bash
               echo "Executing startup script..."
               db_name_suffix="${{ env.VM_DB_NAME_SUFFIX }}"
               db_password="${{ env.VM_DB_PASSWORD }}"
