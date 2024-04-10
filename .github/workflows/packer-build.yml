@@ -158,9 +158,9 @@ jobs:
 
       - name: Update Group Manager
         env:
-          INSTANCE_GROUP_NAME: "webappserver-igm"
-          INSTANCE_TEMPLATE_NAME: "new-template"
-          ZONE_OR_REGION: "us-central1"
+          INSTANCE_GROUP_NAME: ${{ secrets.INSTANCE_GROUP_NAME }}
+          INSTANCE_TEMPLATE_NAME: ${{ secrets.INSTANCE_TEMPLATE_NAME }}
+          ZONE_OR_REGION: ${{ secrets.VM_REGION }}
         run : |
           gcloud compute instance-groups managed set-instance-template \
           ${{env.INSTANCE_GROUP_NAME}} \
@@ -170,9 +170,9 @@ jobs:
 
       - name: Update Rolling Update
         env:
-          INSTANCE_GROUP_NAME: "webappserver-igm"
-          INSTANCE_TEMPLATE_NAME: "new-template"
-          ZONE_OR_REGION: "us-central1"
+          INSTANCE_GROUP_NAME: ${{ secrets.INSTANCE_GROUP_NAME }}
+          INSTANCE_TEMPLATE_NAME:  ${{ secrets.INSTANCE_TEMPLATE_NAME }}
+          ZONE_OR_REGION: ${{ secrets.VM_REGION }}
         run : |
           gcloud compute instance-groups managed rolling-action start-update ${{env.INSTANCE_GROUP_NAME}} \
           --version=template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
@@ -181,9 +181,9 @@ jobs:
 
       - name: Check Update
         env:
-          INSTANCE_GROUP_NAME: "webappserver-igm"
-          INSTANCE_TEMPLATE_NAME: "new-template"
-          ZONE_OR_REGION: "us-central1"
+          INSTANCE_GROUP_NAME: ${{ secrets.INSTANCE_GROUP_NAME }}
+          INSTANCE_TEMPLATE_NAME: ${{ secrets.INSTANCE_TEMPLATE_NAME }}
+          ZONE_OR_REGION: ${{ secrets.VM_REGION }}
         run : |
           gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}} \
             --stable \
