@@ -174,7 +174,9 @@ jobs:
         run : |
           gcloud compute instance-groups managed rolling-action start-update ${{env.INSTANCE_GROUP_NAME}} \
           --version=template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
-          --region=${{ env.ZONE_OR_REGION}}
+          --region=${{ env.ZONE_OR_REGION}} \
+          --max-surge=3 \
+          --max-unavailable=3
 
       - name: Check Update
         env:
@@ -183,7 +185,7 @@ jobs:
           ZONE_OR_REGION: "us-central1"
         run : |
           gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}} \
-            --version-target-reached \
+            --stable \
             --region=${{ env.ZONE_OR_REGION}}
 
 
