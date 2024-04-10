@@ -158,10 +158,11 @@ jobs:
           ZONE_OR_REGION: "us-central1"
         run : |
           gcloud compute instance-groups managed set-instance-template \
-          ${{env.INSTANCE_GROUP_NAME}}  \
+          ${{env.INSTANCE_GROUP_NAME}} \
           --template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
           --region=${{ env.ZONE_OR_REGION }} \
           --project=${{ env.PROJECT_ID }}
+
       - name: Update Rolling Update
         env:
           INSTANCE_GROUP_NAME: "webappserver-igm"
@@ -177,9 +178,9 @@ jobs:
           INSTANCE_TEMPLATE_NAME: "new-template"
           ZONE_OR_REGION: "us-central1"
         run : |
-          gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}}\
-          --version-target-reached \
-          --region=${{ env.ZONE_OR_REGION}}
+          gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}} \
+            --version-target-reached \
+            --region=${{ env.ZONE_OR_REGION}}
 #
 #          gcloud compute instance-groups managed set-instance-template \
 #          ${{env.INSTANCE_GROUP_NAME}}  \
