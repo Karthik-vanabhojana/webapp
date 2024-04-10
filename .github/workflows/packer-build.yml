@@ -162,14 +162,28 @@ jobs:
           --template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
           --region=${{ env.REGION }} \
           --project=${{ env.PROJECT_ID }}
-          
+    
           gcloud compute instance-groups managed rolling-action start-update ${{env.INSTANCE_GROUP_NAME}} \
-            --version=template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
-            --region=${{ env.ZONE_OR_REGION}}
+          --version=template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
+          --region=${{ env.ZONE_OR_REGION}}
 
           gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}}\
-            --version-target-reached \
-            --region=${{ env.ZONE_OR_REGION}}
+          --version-target-reached \
+          --region=${{ env.ZONE_OR_REGION}}
+#
+#          gcloud compute instance-groups managed set-instance-template \
+#          ${{env.INSTANCE_GROUP_NAME}}  \
+#          --template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
+#          --region=${{ env.REGION }} \
+#          --project=${{ env.PROJECT_ID }}
+#
+#          gcloud compute instance-groups managed rolling-action start-update ${{env.INSTANCE_GROUP_NAME}} \
+#            --version=template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
+#            --region=${{ env.ZONE_OR_REGION}}
+#
+#          gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}}\
+#            --version-target-reached \
+#            --region=${{ env.ZONE_OR_REGION}}
 
 #
 #
