@@ -118,6 +118,7 @@ jobs:
           VM_DB_NAME: ${{ secrets.vm_db_name }}
           VM_DB_URL: ${{ secrets.vm_db_url }}
           VM_KMS: ${{ secrets.VM_KMS}}
+          KMS_KEY: ${{ secrets.KMS_KEY}}
 
         run: |
           gcloud compute instance-templates create new-template-${{ env.NEW_IMAGE }} \
@@ -129,7 +130,7 @@ jobs:
             --service-account=${{ env.VM_SERVICE_ACCOUNT_EMAIL }} \
             --network-tier=${{ env.VM_NETWORK_TIER }} \
             --subnet=${{ env.VM_SUBNETWORK }} \
-            --boot-disk-kms-key=${{ env.VM_KMS }} \
+            --boot-disk-kms-key=projects/${{ env.PROJECT_ID }}/locations/${{ env.VM_REGION }}/keyRings/${{ env.KMS_KEY}}/cryptoKeys/${{ env.VM_KMS }} \
             --image=${{ env.NEW_IMAGE }} \
             --boot-disk-type=pd-standard \
             --scopes=https://www.googleapis.com/auth/cloud-platform \
