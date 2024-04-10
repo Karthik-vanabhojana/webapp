@@ -120,10 +120,11 @@ jobs:
           VM_DB_NAME: ${{ secrets.vm_db_name }}
           VM_DB_URL: ${{ secrets.vm_db_url }}
           VM_KMS: ${{ secrets.VM_KMS}}
+          INSTANCE_TEMPLATE_NAME: ${{ secrets.INSTANCE_TEMPLATE_NAME }}
           KMS_KEY: ${{ secrets.KMS_KEY}}
 
         run: |
-          gcloud compute instance-templates create new-template-${{ env.NEW_IMAGE }} \
+          gcloud compute instance-templates ${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
             --project=${{ env.PROJECT_ID }} \
             --region=${{ env.VM_REGION }} \
             --instance-template-region=${{ env.VM_REGION }} \
