@@ -160,7 +160,7 @@ jobs:
           gcloud compute instance-groups managed set-instance-template \
           ${{env.INSTANCE_GROUP_NAME}}  \
           --template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
-          --region=${{ env.REGION }} \
+          --region=${{ env.ZONE_OR_REGION }} \
           --project=${{ env.PROJECT_ID }}
       - name: Update Rolling Update
         env:
