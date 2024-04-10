@@ -183,7 +183,6 @@ jobs:
           ZONE_OR_REGION: "us-central1"
         run : |
           gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}} \
-            --stable \
             --version-target-reached \
             --region=${{ env.ZONE_OR_REGION}}
 
