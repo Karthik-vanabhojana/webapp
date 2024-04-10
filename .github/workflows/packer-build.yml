@@ -129,7 +129,7 @@ jobs:
             --service-account=${{ env.VM_SERVICE_ACCOUNT_EMAIL }} \
             --network-tier=${{ env.VM_NETWORK_TIER }} \
             --subnet=${{ env.VM_SUBNETWORK }} \
-            --disk=source=disk-encryption-key=kms-key="vm-crypto-key"
+            --boot-disk-kms-key=${{ env.VM_KMS }} \
             --image=${{ env.NEW_IMAGE }} \
             --boot-disk-type=pd-standard \
             --scopes=https://www.googleapis.com/auth/cloud-platform \
