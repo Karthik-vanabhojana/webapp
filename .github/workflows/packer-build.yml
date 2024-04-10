@@ -119,7 +119,7 @@ jobs:
           VM_DB_URL: ${{ secrets.vm_db_url }}
 
         run: |
-          gcloud compute instance-templates create new-template \
+          gcloud compute instance-templates create new-template-${{ env.NEW_IMAGE }} \
             --project=${{ env.PROJECT_ID }} \
             --region=${{ env.VM_REGION }} \
             --instance-template-region=${{ env.VM_REGION }} \
@@ -157,13 +157,43 @@ jobs:
           INSTANCE_TEMPLATE_NAME: "new-template"
           ZONE_OR_REGION: "us-central1"
         run : |
+          gcloud compute instance-groups managed set-instance-template \
+          ${{env.INSTANCE_GROUP_NAME}}  \
+          --template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
+          --region=${{ env.REGION }} \
+          --project=${{ env.PROJECT_ID }}
+          
           gcloud compute instance-groups managed rolling-action start-update ${{env.INSTANCE_GROUP_NAME}} \
-            --version=template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}} \
+            --version=template=projects/${{ env.PROJECT_ID }}/regions/${{ env.ZONE_OR_REGION}}/instanceTemplates/${{env.INSTANCE_TEMPLATE_NAME}}-${{ env.NEW_IMAGE }} \
             --region=${{ env.ZONE_OR_REGION}}
 
             gcloud compute instance-groups managed wait-until ${{env.INSTANCE_GROUP_NAME}}\
               --version-target-reached \
               --region=${{ env.ZONE_OR_REGION}}
+
+#
+#
+#            - name: Update Managed Instance Group
+#          run: |
+#          gcloud compute instance-groups managed set-instance-template \
+#          appserver-igm \
+#          --template=projects/${{ env.PROJECT_ID }}/regions/${{ env.REGION }}/instanceTemplates/instance-template-test-${{ env.NEW_IMAGE }} \
+#          --region=${{ env.REGION }} \
+#          --project=${{ env.PROJECT_ID }}
+#
+#          - name: Rolling update of Instance Group
+#            run: |
+#              gcloud compute instance-groups managed rolling-action start-update appserver-igm \
+#                --version=template=projects/${{ env.PROJECT_ID }}/regions/${{ env.REGION }}/instanceTemplates/instance-template-test-${{ env.NEW_IMAGE }} \
+#                --region=${{ env.REGION }}
+#
+#          - name: Wait for MIG update to complete
+#            run: |
+#              gcloud compute instance-groups managed wait-until appserver-igm \
+#                --version-target-reached \
+#                --region=${{ env.REGION }}
+#
+#
 
       - name: Result Success Message
         if: success()
