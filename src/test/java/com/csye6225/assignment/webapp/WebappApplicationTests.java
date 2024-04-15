@@ -94,7 +94,7 @@ class WebappApplicationTests {
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post("http://localhost:8080/v1/user")
+                .post("http://localhost:8080/v2/user")
                 .then()
                 .statusCode(201);
     }
@@ -113,7 +113,7 @@ class WebappApplicationTests {
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post("http://localhost:8080/v1/user")
+                .post("http://localhost:8080/v2/user")
                 .then()
                 .statusCode(400);
     }
@@ -130,7 +130,7 @@ class WebappApplicationTests {
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .get("http://localhost:8080/v1/user")
+                .get("http://localhost:8080/v2/user")
                 .then()
                 .statusCode(405);
     }
@@ -149,7 +149,7 @@ class WebappApplicationTests {
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post("http://localhost:8080/v1/user")
+                .post("http://localhost:8080/v2/user")
                 .then()
                 .statusCode(400);
     }
@@ -159,7 +159,7 @@ class WebappApplicationTests {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .post("http://localhost:8080/v1/user")
+                .post("http://localhost:8080/v2/user")
                 .then()
                 .statusCode(400);
     }
@@ -178,7 +178,7 @@ class WebappApplicationTests {
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post("http://localhost:8080/v1/user/si")
+                .post("http://localhost:8080/v2/user/si")
                 .then()
                 .statusCode(404);
     }
@@ -200,7 +200,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .header("Authorization", authorizationHeader)
                 .accept(ContentType.JSON)
                 .when()
-                .get("http://localhost:8080/v1/user/self")
+                .get("http://localhost:8080/v2/user/self")
                 .then()
                 .assertThat()
                 .statusCode(200)
@@ -221,7 +221,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .header("Authorization", authorizationHeader)
                 .accept(ContentType.JSON)
                 .when()
-                .get("http://localhost:8080/v1/user/self")
+                .get("http://localhost:8080/v2/user/self")
                 .then()
                 .assertThat()
                 .statusCode(401);
@@ -246,7 +246,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .header("Authorization", authorizationHeader)
                 .accept(ContentType.JSON)
                 .when()
-                .get("http://localhost:8080/v1/user/self")
+                .get("http://localhost:8080/v2/user/self")
                 .then()
                 .assertThat()
                 .statusCode(400);
@@ -263,7 +263,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .header("Authorization", authorizationHeader)
                 .accept(ContentType.JSON)
                 .when()
-                .patch("http://localhost:8080/v1/user/self")
+                .patch("http://localhost:8080/v2/user/self")
                 .then()
                 .assertThat()
                 .statusCode(405);
@@ -279,7 +279,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .header("Authorization", authorizationHeader)
                 .accept(ContentType.JSON)
                 .when()
-                .get("http://localhost:8080/v1/user/self/sss")
+                .get("http://localhost:8080/v2/user/self/sss")
                 .then()
                 .assertThat()
                 .statusCode(404);
@@ -302,7 +302,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .put("http://localhost:8080/v1/user/self")
+                .put("http://localhost:8080/v2/user/self")
                 .then()
                 .assertThat()
                 .statusCode(204);
@@ -319,7 +319,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .header("Authorization", authorizationHeader)
                 .accept(ContentType.JSON)
                 .when()
-                .get("http://localhost:8080/v1/user/self")
+                .get("http://localhost:8080/v2/user/self")
                 .then()
                 .assertThat()
                 .statusCode(200)
@@ -345,7 +345,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .put("http://localhost:8080/v1/user/self")
+                .put("http://localhost:8080/v2/user/self")
                 .then()
                 .assertThat()
                 .statusCode(401);
@@ -368,7 +368,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .put("http://localhost:8080/v1/user/self")
+                .put("http://localhost:8080/v2/user/self")
                 .then()
                 .assertThat()
                 .statusCode(400);
@@ -389,7 +389,7 @@ User user =this.userRepo.findByEmail(username).get();
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .put("http://localhost:8080/v1/user/self")
+                .put("http://localhost:8080/v2/user/self")
                 .then()
                 .assertThat()
                 .statusCode(400);
