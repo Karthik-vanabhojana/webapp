@@ -43,7 +43,7 @@ Publish publish;
     @Autowired
     private AuthenticationManagement authenticationManagement;
     private static Logger LOGGER = LoggerFactory.getLogger("jsonLogger");
-    @RequestMapping(value = {"/healthz","/v1/user","/v1/user/self"},method = {RequestMethod.OPTIONS,RequestMethod.HEAD})
+    @RequestMapping(value = {"/healthz","/v2/user","/v2/user/self"},method = {RequestMethod.OPTIONS,RequestMethod.HEAD})
     public ResponseEntity<Void> checkAdditionalfield() {
 
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
@@ -92,7 +92,7 @@ Publish publish;
                     .build();
         }
     }
-    @PostMapping("/v1/user")
+    @PostMapping("/v2/user")
     public ResponseEntity<UserDTO> createUser(@Validated(CreateValid.class) @RequestBody UserDTO userdto) throws DuplicateUserNameException {
         LOGGER.debug("UserController. createUser {}");
         LOGGER.info("Trying to Register new User to the database");
@@ -115,7 +115,7 @@ Publish publish;
     }
 
     @Secured
-    @GetMapping("/v1/user/self")
+    @GetMapping("/v2/user/self")
 
     public ResponseEntity<UserDTO> getself(@RequestHeader("Authorization") String authorizationHeader,HttpServletRequest httpRequest) throws IOException, UserNotverified {
         LOGGER.debug("UserController. getself {}");
@@ -140,7 +140,7 @@ Publish publish;
     }
 
     @Secured
-    @PutMapping("/v1/user/self")
+    @PutMapping("/v2/user/self")
 
     public ResponseEntity<Void> updateSelf(@RequestHeader("Authorization") String authorizationHeader, @Validated(UpdateValid.class) @RequestBody UserDTO userdto) throws BadRequestEmail, IOException, UserNotverified {
         LOGGER.debug("UserController. updateSelf {}");
