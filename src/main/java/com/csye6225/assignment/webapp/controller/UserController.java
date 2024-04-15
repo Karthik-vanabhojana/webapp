@@ -176,7 +176,7 @@ Publish publish;
     }
 
 
-    @GetMapping("/v1/user/verify")
+    @GetMapping("/v2/user/verify")
     public ResponseEntity<String> getVerified(@RequestParam String token, @RequestParam String email) throws UserNotverified, InvalidToken {
 
 
